@@ -1,0 +1,83 @@
+version: '3.9'
+
+services:
+  edc-postgres:
+    container_name: ${POSTGRES_CONTAINER_NAME}
+    image: postgres:14.1-alpine
+    restart: always
+    user: postgres
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes: 
+      - ${POSTGRES_VOLUME}:/var/lib/postgresql/data
+      - ./connector/postgres:/docker-entrypoint-initdb.d
+    command: -p ${POSTGRES_PORT}
+    healthcheck:   
+      test: ["CMD-SHELL", "pg_isready -p ${POSTGRES_PORT} -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  edc-connector:
+    container_name: ${CONNECTOR_CONTAINER_NAME}
+    image: openjdk:20-jdk-slim
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+      - ${HTTP_PUBLIC_PORT}:${HTTP_PUBLIC_PORT}
+      - ${HTTP_MANAGEMENT_PORT}:${HTTP_MANAGEMENT_PORT}
+      - ${HTTP_PROTOCOL_PORT}:${HTTP_PROTOCOL_PORT}
+      - ${HTTP_CONTROL_PORT}:${HTTP_CONTROL_PORT}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - EDC_FS_CONFIG=/app/config.properties
+      - CONNECTOR_NAME=${CONNECTOR_NAME}
+      - PARTICIPANT_ID=${PARTICIPANT_ID}
+      - API_AUTH_KEY=${API_AUTH_KEY}
+      - LOG_PREFIX=${LOG_PREFIX}
+      - HTTP_PORT=${HTTP_PORT}
+      - HTTP_PUBLIC_PORT=${HTTP_PUBLIC_PORT}
+      - HTTP_MANAGEMENT_PORT=${HTTP_MANAGEMENT_PORT}
+      - HTTP_PROTOCOL_PORT=${HTTP_PROTOCOL_PORT}
+      - HTTP_CONTROL_PORT=${HTTP_CONTROL_PORT}
+      - DSP_CALLBACK_ADDRESS=http://host.docker.internal:${HTTP_PROTOCOL_PORT}/protocol
+      - RECEIVER_HTTP_ENDPOINT=http://localhost:${HTTP_PORT}/receiver/urn:connector:provider/callback
+      - TOKEN_VALIDATION_ENDPOINT=http://host.docker.internal:${HTTP_CONTROL_PORT}/control/token
+      - POSTGRES_URL=${POSTGRES_URL}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./connector/connector.jar:/app/connector.jar
+      - ./connector/config/connector-config.properties:/app/config.properties
+      - ./connector/config/cert.pfx:/app/cert.pfx
+      - ./connector/start-connector.sh:/app/start-connector.sh
+    depends_on:
+      edc-postgres:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "/app/start-connector.sh"]
+
+  provider-edc-handler:
+    environment:
+      - JAVA_OPTS=-Xms256m -Xmx512m
+    build:
+      context: edc-handler
+      args:
+        DB_IP: ${POSTGRES_CONTAINER_NAME}
+        DB_PORT: ${POSTGRES_PORT}
+        DB_NAME: ${POSTGRES_DB}
+        DB_USERNAME: ${POSTGRES_USER}
+        DB_PASSWORD: ${POSTGRES_PASSWORD}
+      dockerfile: Dockerfile
+    image: ${HANDLER_IMAGE_NAME}
+    container_name: ${HANDLER_CONTAINER_NAME}
+    ports:
+      - "${HANDLER_PORT}:15588"
+    restart: unless-stopped
+
+volumes:
+  edc_postgres_volume:
+    driver: local

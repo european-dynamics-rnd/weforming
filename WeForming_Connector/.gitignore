@@ -1,0 +1,7 @@
+/_backup
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
