@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Data Catalog</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { text-align: center; }
+        table { width: 90%; margin: 20px auto; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ddd; }
+        th { background-color: #f2f2f2; }
+        .error { color: red; text-align: center; }
+        .pagination { text-align: center; margin-bottom: 20px; }
+        .pagination button { padding: 5px 10px; border: none; background-color: #428edf; color: white; cursor: pointer; }
+        .pagination button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+<h1>My Data Catalog</h1>
+
+<div class="pagination">
+    <button id="prevPage" onclick="changePage(-1)" disabled>&lt; Prev</button>
+    <span id="currentPage">Page: 0</span>
+    <button id="nextPage" onclick="changePage(1)">Next &gt;</button>
+</div>
+
+<table id="assetsTable">
+    <thead>
+    <tr>
+        <th>Asset Details (JSON)</th>
+        <th>Get File</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<p class="error" id="errorMsg" style="display: none;">Failed to fetch data. Please try again.</p>
+
+<script>
+    let currentPage = 0;
+
+    function fetchAssets() {
+        fetch(`/api/asset/my-assets?page=${currentPage}`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                const datasets = data['dcat:dataset'];
+                const tbody = document.querySelector('#assetsTable tbody');
+                tbody.innerHTML = '';
+
+                if (!datasets || datasets.length === 0) {
+                    document.getElementById('errorMsg').textContent = "No assets found.";
+                    document.getElementById('errorMsg').style.display = "block";
+                    return;
+                }
+                document.getElementById('errorMsg').style.display = "none";
+
+                datasets.forEach(dataset => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                <td><pre>${JSON.stringify(dataset, null, 2)}</pre></td>
+                <td><button onclick="downloadFile('${dataset["@id"]}')">Download</button></td>
+                `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching assets:', error);
+                document.getElementById('errorMsg').style.display = "block";
+            });
+    }
+
+    function changePage(offset) {
+        currentPage += offset;
+        document.getElementById('currentPage').textContent = `Page: ${currentPage}`;
+        document.getElementById('prevPage').disabled = currentPage === 0;
+        fetchAssets();
+    }
+
+    function downloadFile(fileId) {
+        fetch(`/api/files/${fileId}`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('File not found');
+                return response.json();
+            })
+            .then(fileData => {
+                const fileName = fileData.fileName;
+                const fileContentBase64 = fileData.fileContent;
+                const fileContent = atob(fileContentBase64);
+                const byteArray = new Uint8Array(fileContent.length);
+                for (let i = 0; i < fileContent.length; i++) {
+                    byteArray[i] = fileContent.charCodeAt(i);
+                }
+                const blob = new Blob([byteArray], { type: 'application/octet-stream' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                console.error('Error downloading file:', error);
+                alert('Error downloading file: ' + error.message);
+            });
+    }
+
+    fetchAssets();
+</script>
+</body>
+</html>

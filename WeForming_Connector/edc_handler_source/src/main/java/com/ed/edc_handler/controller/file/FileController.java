@@ -1,8 +1,8 @@
-package com.ed.edc_handler.controller;
+package com.ed.edc_handler.controller.file;
 
-import com.ed.edc_handler.dto.FileLogDto;
+import com.ed.edc_handler.dto.file.FileLogDto;
 import com.ed.edc_handler.model.FileEntity;
-import com.ed.edc_handler.service.FileService;
+import com.ed.edc_handler.service.file.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,11 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/files")

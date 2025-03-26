@@ -1,4 +1,4 @@
-package com.ed.edc_handler.dto;
+package com.ed.edc_handler.dto.file;
 
 import lombok.Data;
 
