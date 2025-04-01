@@ -105,9 +105,9 @@ public class AssetService {
 
         log.debug("*** 1. Register Dataplane to Connector");
         DataPlaneInstanceDTO dataPlane = new DataPlaneInstanceDTO();
-        dataPlane.setUrl(connectorControlUrl + "/control/transfer");
-        dataPlane.getProperties().put("publicApiUrl", connectorPublicUrl + "/public/");
-        this.connectorRestTemplate.post(dataPlane, connectorManagementUrl + "/management/v2/dataplanes");
+        dataPlane.setUrl(connectorControlUrl + "/transfer");
+        dataPlane.getProperties().put("publicApiUrl", connectorPublicUrl + "/");
+        this.connectorRestTemplate.post(dataPlane, connectorManagementUrl + "/v2/dataplanes");
 
         log.debug("*** 2. Create Asset");
         AssetDTO assetDTO = new AssetDTO();
@@ -127,24 +127,24 @@ public class AssetService {
 
         assetDTO.getDataAddress().setName(id);
         assetDTO.getDataAddress().setBaseUrl(handlerPublicUrl +"/files/" + id);
-        this.connectorRestTemplate.post(assetDTO, connectorManagementUrl + "/management/v3/assets");
+        this.connectorRestTemplate.post(assetDTO, connectorManagementUrl + "/v3/assets");
 
         log.debug("*** 3. Create Policy 'general-policy' if it does not Exist");
-        Object response  = this.connectorRestTemplate.get(connectorManagementUrl + "/management/v2/policydefinitions/general-policy");
+        Object response  = this.connectorRestTemplate.get(connectorManagementUrl + "/v2/policydefinitions/general-policy");
         if(response == null){
             PolicyDTO policyDTO = new PolicyDTO();
             policyDTO.setId("general-policy");
-            this.connectorRestTemplate.post(policyDTO, connectorManagementUrl + "/management/v2/policydefinitions");
+            this.connectorRestTemplate.post(policyDTO, connectorManagementUrl + "/v2/policydefinitions");
         }
 
         log.debug("***  4. Create Contract 'general-contract' if it does not Exist");
-        response  = this.connectorRestTemplate.get(connectorManagementUrl + "/management/v2/contractdefinitions/general-contract");
+        response  = this.connectorRestTemplate.get(connectorManagementUrl + "/v2/contractdefinitions/general-contract");
         if(response == null) {
             ContractDTO contractDTO = new ContractDTO();
             contractDTO.setId("general-contract");
             contractDTO.setAccessPolicyId("general-policy");
             contractDTO.setContractPolicyId("general-policy");
-            this.connectorRestTemplate.post(contractDTO, connectorManagementUrl + "/management/v2/contractdefinitions");
+            this.connectorRestTemplate.post(contractDTO, connectorManagementUrl + "/v2/contractdefinitions");
         }
 
         log.debug("*** Activate Data Offering to Central Registry By id="+ id);
@@ -178,10 +178,22 @@ public class AssetService {
         String providerConnectorProtocolUrl = (String) data.get(0).get("provider_connector_protocol_url"); // 8004
         String providerConnectorControlUrl = (String) data.get(0).get("provider_connector_control_url"); //8005
 
+        if(consumerConnectorPublicUrl.equals(providerConnectorPublicUrl)){
+            log.debug("*** 4.9 Connectors are the same, so down nagotiate anything, just download file.");
+            FileEntity fileEntity = fetchFileEntityWithRetries(consumerHandlerUrl + "/files/" + parameters.get("id"));
+
+            String fileContent = new String( fileEntity.getFileContent() );
+            return new HashMap<String, Object>() {{
+                put("fileContent", fileContent);
+                put("id", fileEntity.getId());
+                put("retrieved", true);
+            }};
+        }
+
         log.debug("*** 5. Fetch Provider's Catalog");
         CatalogRequestWithIdDTO dataCatalogRequestWithIdDto = new CatalogRequestWithIdDTO(parameters.get("id"));
-        dataCatalogRequestWithIdDto.setCounterPartyAddress(providerConnectorProtocolUrl + "/protocol");
-        Map response = (Map) this.connectorRestTemplate.post(dataCatalogRequestWithIdDto, consumerConnectorManagementUrl + "/management/v2/catalog/request/");
+        dataCatalogRequestWithIdDto.setCounterPartyAddress(providerConnectorProtocolUrl);
+        Map response = (Map) this.connectorRestTemplate.post(dataCatalogRequestWithIdDto, consumerConnectorManagementUrl + "/v2/catalog/request/");
         Map dataset = (Map) response.get("dcat:dataset");
         Map policy;
         Object policiesObj = dataset.get("odrl:hasPolicy");
@@ -194,27 +206,22 @@ public class AssetService {
 
         log.debug("*** 6. Negotiate a contract");
         ContractRequestDTO contractRequestDTO = new ContractRequestDTO();
-        contractRequestDTO.setCounterPartyAddress(providerConnectorProtocolUrl + "/protocol" );
+        contractRequestDTO.setCounterPartyAddress(providerConnectorProtocolUrl );
         contractRequestDTO.getPolicy().setId(contractOfferId);
-        response = (Map) this.connectorRestTemplate.post(contractRequestDTO, consumerConnectorManagementUrl + "/management/v2/contractnegotiations");
+        response = (Map) this.connectorRestTemplate.post(contractRequestDTO, consumerConnectorManagementUrl + "/v2/contractnegotiations");
         String contractNegotiationId = (String) response.get("@id");
 
         log.debug("*** 7. Check negotiation status");
         String contractAgreementId = getFinalizedContractAgreementId(consumerConnectorManagementUrl, contractNegotiationId);
-//        response = (Map) this.connectorRestTemplate.get(consumerConnectorManagementUrl + "/management/v2/contractnegotiations/" + contractNegotiationId);
-//        //state -> FINALIZED
-//        String state = (String) response.get("state");
-//        String contractAgreementId = (String) response.get("contractAgreementId");
 
         log.debug("*** 8. Push");
         TransferRequestDto transferRequestDto = new TransferRequestDto();
-        transferRequestDto.setCounterPartyAddress(providerConnectorProtocolUrl + "/protocol");
+        transferRequestDto.setCounterPartyAddress(providerConnectorProtocolUrl);
         transferRequestDto.setContractId(contractAgreementId);
         transferRequestDto.getDataDestination().setBaseUrl(consumerHandlerPublicUrl+"/files/import");
-        response = (Map) this.connectorRestTemplate.post(transferRequestDto, consumerConnectorManagementUrl + "/management/v2/transferprocesses");
+        response = (Map) this.connectorRestTemplate.post(transferRequestDto, consumerConnectorManagementUrl + "/v2/transferprocesses");
 
         log.debug("*** Get Data for the frontend");
-        //FileEntity fileEntity = this.fileHandlerRestTemplate.get(consumerHandlerUrl + "/files/" + parameters.get("id"));
         FileEntity fileEntity = fetchFileEntityWithRetries(consumerHandlerUrl + "/files/" + parameters.get("id"));
 
         String fileContent = new String( fileEntity.getFileContent() );
@@ -236,7 +243,7 @@ public class AssetService {
         do {
             // Fetch the contract negotiation state
             Map<String, Object> response = (Map<String, Object>) this.connectorRestTemplate.get(
-                    consumerConnectorManagementUrl + "/management/v2/contractnegotiations/" + contractNegotiationId
+                    consumerConnectorManagementUrl + "/v2/contractnegotiations/" + contractNegotiationId
             );
 
             // Get the state of the contract negotiation

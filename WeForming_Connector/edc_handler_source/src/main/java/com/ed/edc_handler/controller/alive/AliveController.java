@@ -13,7 +13,6 @@ public class AliveController {
 
     @GetMapping
     public Map getAllFiles() {
-
         Map response = new HashMap();
         response.put("version", "1.0");
         response.put("message", "ok");

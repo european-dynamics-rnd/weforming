@@ -40,7 +40,7 @@
     let currentPage = 0;
 
     function fetchAssets() {
-        fetch(`/api/asset/my-assets?page=${currentPage}`, {
+        fetch(`/handler/asset/my-assets?page=${currentPage}`, {
             method: 'GET',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
         })
@@ -83,7 +83,7 @@
     }
 
     function downloadFile(fileId) {
-        fetch(`/api/files/${fileId}`, {
+        fetch(`/handler/files/${fileId}`, {
             method: 'GET',
             headers: { 'Accept': 'application/json' }
         })
