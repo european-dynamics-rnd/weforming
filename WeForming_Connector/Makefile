@@ -1,11 +1,13 @@
-# Define the target for refreshing containers
-containers-reset:
-	@echo "Bringing down Docker Compose services..."
-	docker compose down
-	@echo "Removing Docker volumes..."
-	docker volume rm ed-edc_edc_postgres_volume || true
+# Start Docker Compose services
+containers-start:
 	@echo "Bringing up Docker Compose services with build..."
-	docker compose up --build -d
+	docker compose -f docker-compose_Postgres.yml up --build -d
+
+# Restart Docker Compose services without removing volumes
+containers-restart:
+	@echo "Restarting Docker Compose services..."
+	docker compose -f docker-compose_Postgres.yml down
+	$(MAKE) containers-start
 
 # Ensure Makefile uses tabs for indentation
-.PHONY: containers-reset
+.PHONY: containers-start containers-restart

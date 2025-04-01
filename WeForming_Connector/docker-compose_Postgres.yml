@@ -1,0 +1,135 @@
+version: '3.9'
+
+services:
+
+  provider-postgres:
+    container_name: provider-postgres
+    image: postgres:14.1-alpine
+    restart: always
+    user: postgres
+    ports:
+      - 8432:8432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=edc_store
+    volumes: 
+      - provider-postgres:/var/lib/postgresql/data
+      - ./connector/postgres:/docker-entrypoint-initdb.d
+    command: -p 8432
+    healthcheck:   
+      test: ["CMD-SHELL", "pg_isready -p 8432 -U postgres"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  provider-connector:
+    container_name: provider-connector
+    image: openjdk:20-jdk-slim
+    ports:
+      - 8001:8001
+      - 8002:8002
+      - 8003:8003
+      - 8004:8004
+      - 8005:8005
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      EDC_FS_CONFIG: /app/config.properties
+    volumes:
+      - ./connector/connector_0-1-2_Postgres.jar:/app/connector.jar
+      - ./connector/config/provider-config.properties:/app/config.properties
+      - ./connector/config/cert.pfx:/app/cert.pfx
+    depends_on:
+      provider-postgres:
+        condition: service_healthy
+    entrypoint: ["java","-jar", "/app/connector.jar", "-Dedc.keystore=/app/cert.pfx"]
+
+  provider-edc-handler:
+    environment:
+      - JAVA_OPTS=-Xms256m -Xmx512m
+    build:
+      context: edc-handler
+      args:
+        DB_IP: provider-postgres
+        DB_PORT: 8432
+        DB_NAME: edc_store
+        DB_USERNAME: postgres
+        DB_PASSWORD: postgres
+        SOFIA_URI: https://weforming-mid.eurodyn.com/api
+        CONNECTOR_URI: https://weforming-connector-server.eurodyn.com
+      dockerfile: Dockerfile
+    image: provider-edc-handler
+    container_name: provider-edc-handler
+    ports:
+      - "15588:15588"
+    restart: unless-stopped
+
+  # consumer-postgres:
+  #   container_name: consumer-postgres
+  #   image: postgres:14.1-alpine
+  #   restart: always
+  #   user: postgres
+  #   ports:
+  #     - 9432:9432
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #     - POSTGRES_DB=edc_store
+  #   volumes: 
+  #     - consumer-postgres:/var/lib/postgresql/data
+  #     - ./connector/postgres:/docker-entrypoint-initdb.d
+  #   command: -p 9432
+  #   healthcheck:   
+  #     test: ["CMD-SHELL", "pg_isready -p 9432 -U postgres"]
+  #     interval: 10s
+  #     timeout: 3s
+  #     retries: 3
+
+  # consumer-connector:
+  #   container_name: consumer-connector
+  #   image: openjdk:20-jdk-slim
+  #   ports:
+  #     - 9001:9001
+  #     - 9002:9002
+  #     - 9003:9003
+  #     - 9004:9004
+  #     - 9005:9005
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   environment:
+  #     EDC_FS_CONFIG: /app/config.properties
+  #   volumes:
+  #     - ./connector/connector_0-1-2_Postgres.jar:/app/connector.jar
+  #     - ./connector/config/consumer-config.properties:/app/config.properties
+  #     - ./connector/config/cert.pfx:/app/cert.pfx
+  #   depends_on:
+  #     consumer-postgres:
+  #       condition: service_healthy
+  #   entrypoint: ["java","-jar", "/app/connector.jar"]
+
+  # consumer-edc-handler:
+  #   environment:
+  #     - JAVA_OPTS=-Xms256m -Xmx512m
+  #   build:
+  #     context: edc-handler
+  #     args:
+  #       DB_IP: consumer-postgres
+  #       DB_PORT: 9432
+  #       DB_NAME: edc_store
+  #       DB_USERNAME: postgres
+  #       DB_PASSWORD: postgres
+  #     dockerfile: Dockerfile
+  #   image: consumer-edc-handler
+  #   container_name: consumer-edc-handler
+  #   ports:
+  #     - "15589:15588"
+  #   restart: unless-stopped
+
+volumes:
+
+  provider-postgres:
+    driver: local
+
+  consumer-postgres:
+    driver: local
