@@ -171,10 +171,11 @@ To provide data to a specific offering, you need to locate its UUID:
 4. You’ll see a list of your existing service offerings
 5. Select the ID (UUID) of the offering you want to provide data for.
 
+*Note: You may also get the service offering IDs via API, see on Middleware GUI the REST API documentation and call Get My Offerings List.*
 
 ![An example image](my_offerings.png)
 
-You may also get the service offering IDs via API, see on Middleware GUI the REST API documentation and call Get My Offerings List.
+
 
 ### Provide Data Programmatically with a Python Sample script
 
