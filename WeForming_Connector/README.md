@@ -12,6 +12,7 @@ The **WeForming Connector** is built on top of the **Eclipse Dataspace Connector
 ### We provide two options
 
   **Option 1**: Shared cloud-hosted connectors, managed by European Dynamics.
+  
   **Option 2** : The ability for each participant to deploy their own connector by following the instructions below
 
 *For both options kindly contact konstantinos.kotsalos@eurodyn.com & stratis.kanarachos@eurodyn.com for creating user credentials for the Middleware; on your request indicate the number of user accounts, affiliation and email contact, as well as if you plan to assign them with a cloud-host connector*
