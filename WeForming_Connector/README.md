@@ -11,9 +11,10 @@ The **WeForming Connector** is built on top of the **Eclipse Dataspace Connector
 
 ### We provide two options
 
-  - Shared cloud-hosted connectors, managed by us.
-  - The ability for each participant to deploy their own connector by following the instructions below
+  **Option 1**: Shared cloud-hosted connectors, managed by European Dynamics.
+  **Option 2** : The ability for each participant to deploy their own connector by following the instructions below
 
+*For both options kindly contact konstantinos.kotsalos@eurodyn.com & stratis.kanarachos@eurodyn.com for creating user credentials for the Middleware; on your request indicate the number of user accounts, affiliation and email contact, as well as if you plan to assign them with a cloud-host connector*
 
 # Requirements
 
@@ -55,7 +56,7 @@ Each connector instance exposes a set of well-defined API endpoints on dedicated
 | Public | 8002 | /public | Used for exposing open APIs and endpoint registration |
 | Handler | 15502 | /handler | Backend service endpoint for file storage and pull request reception |
 
-Important: Make sure these ports are open and not occupied by other processes on your system.
+**Important note**: Make sure these ports are open and not occupied by other processes on your system.
 
 In the demo setup, the connector uses the default port mapping as shown above.
 
