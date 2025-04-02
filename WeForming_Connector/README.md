@@ -55,7 +55,7 @@ Each connector instance exposes a set of well-defined API endpoints on dedicated
 | Control | 8005 | /control | Handles contract negotiation and transfer process coordination  |
 | Protocol | 8004 | /protocol | Manages IDS protocol communication between connectors |
 | Public | 8002 | /public | Used for exposing open APIs and endpoint registration |
-| Handler | 15502 | /handler | Backend service endpoint for file storage and pull request reception |
+| Handler | 15588 | /handler | Backend service endpoint for file storage and pull request reception |
 
 **Important note**: Make sure these ports are open and not occupied by other processes on your system.
 
@@ -64,7 +64,7 @@ In the demo setup, the connector uses the default port mapping as shown above.
 ## Health Check
 To verify that the backend handler service is running correctly, you can access its health check endpoint
 ```
-GET http://<connector-host>:15502/handler/alive
+GET http://<connector-host>:15588/handler/alive
 ```
 
 ## Exposing the Connector via a Reverse Proxy
@@ -89,7 +89,7 @@ Here’s a real-world configuration example:
 
 | Connector Interface	 | Frontend (Public URL) | Backend (Internal URL) |
 | :---------------- | :------: | :---- |
-| Handler | https://weforming-connector-sec.eurodyn.com/handler | http://weforming-connector-server.eurodyn.com:15502 | 
+| Handler | https://weforming-connector-sec.eurodyn.com/handler | http://weforming-connector-server.eurodyn.com:15588 | 
 | Public | https://weforming-connector-sec.eurodyn.com/public | http://weforming-connector-server.eurodyn.com:8002 |
 | Management | https://weforming-connector-sec.eurodyn.com/management | http://weforming-connector-server.eurodyn.com:8003 |
 | Protocol | https://weforming-connector-sec.eurodyn.com/protocol | http://weforming-connector-server.eurodyn.com:8004 |
@@ -132,7 +132,7 @@ Once authenticated, you can send base64-encoded data to the backend using the /a
 #### Data Submission Endpoint
 
 ```
-POST http://connector_local:15502/handler/asset/provide
+POST http://connector_local:15588/handler/asset/provide
 ```
 
 If you are using one of our cloud connectors you can call the 
