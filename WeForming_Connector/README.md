@@ -28,7 +28,7 @@ To run the project you will need:
 ### Clone the repository 
 
 ```
-clone https://github.com/your-org/weforming-connector.git
+clone https://github.com/european-dynamics-rnd/weforming.git
 cd weforming/WeForming_Connector
 ```
 
