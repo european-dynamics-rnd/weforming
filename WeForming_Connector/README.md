@@ -64,7 +64,7 @@ In the demo setup, the connector uses the default port mapping as shown above.
 ## Health Check
 To verify that the backend handler service is running correctly, you can access its health check endpoint
 ```
-GET http://<connector-host>:15588/handler/alive
+GET http://<connector-host>:15588/handler/health
 ```
 
 ## Exposing the Connector via a Reverse Proxy
