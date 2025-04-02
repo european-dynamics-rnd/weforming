@@ -29,7 +29,7 @@ To run the project you will need:
 
 ```
 clone https://github.com/your-org/weforming-connector.git
-cd weforming-connector
+cd weforming/WeForming_Connector
 ```
 
 ### Start the services
