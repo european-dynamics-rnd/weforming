@@ -26,6 +26,7 @@ services:
   provider-connector:
     container_name: provider-connector
     image: openjdk:20-jdk-slim
+    restart: always
     ports:
       - 8001:8001
       - 8002:8002
@@ -63,7 +64,7 @@ services:
     container_name: provider-edc-handler
     ports:
       - "15588:15588"
-    restart: unless-stopped
+    restart: always
 
   # consumer-postgres:
   #   container_name: consumer-postgres
