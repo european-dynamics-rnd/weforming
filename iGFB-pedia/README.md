@@ -1,19 +1,19 @@
-* iGFB-pedia
+# iGFB-pedia
 1.	Introduction to iGFBs
-a.	Why do we need iGFBs: Social, economic and technological importance
-b.	Examples of existing iGFBs
-2.	iGFB technological enablers
+    a.	Why do we need iGFBs: Social, economic and technological importance
+    b.	Examples of existing iGFBs
+3.	iGFB technological enablers
 a.	Building Digital Platforms
 b.	Real-time Controller for multi-energy asset operation coordination
 c.	Electrical and thermal power processing hubs
 d.	Buildings’ Digital Models and Digital Twins
 e.	AI/ML tools governing the operation of iGFBs
-3.	iGFB digital interoperability enablers
+4.	iGFB digital interoperability enablers
 a.	Open Services Catalogue and App Store
 b.	Data Space Connector
 c.	Interoperability Middleware
 d.	Security, Privacy and Data Sovereignty
-4.	iGFB integration
+5.	iGFB integration
 a.	Tutorial for igFB integration in WeForming ecosystem
 b.	Example1: Pilot in Luxembourg
 c.	Example 2: Pilot in Portugal
