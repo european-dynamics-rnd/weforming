@@ -30,14 +30,58 @@
 
 ## Introduction to iGFBs
 
-The landscape of electricity generation and consumption in the European Union is rapidly evolving. The adoption of wind and solar energy has led to a more variable energy mix, while electric vehicles (EVs) are becoming a major new load on the electrical grid. At the same time, substantial upgrades to aging infrastructure are necessary to meet modern electricity demands.
+The landscape of electricity generation and consumption in the European Union is rapidly evolving. The swift adoption of wind and solar energy is leading to a more variable mix of power generation resources. Meanwhile, electric vehicle sales are surging and are expected to become a significant new load on the electrical grid. Substantial investments will be required to upgrade the aging transmission and distribution infrastructure to meet the electricity delivery needs of a modernized grid.
+The increasing reliance on electricity will impose new demands on the power system. Additionally, many consumers are now generating or storing electricity on-site, leading to more frequent two-way power flows on the grid.
 
-Consumers are increasingly generating or storing electricity on-site, creating a two-way power flow on the grid. To meet future needs, the EU must deploy a cost-effective, flexible mix of generation, demand-side, and storage resources. The EU’s climate goals — a 55% reduction in greenhouse gas emissions by 2030 and carbon neutrality by 2050 — demand a rapid decarbonization of electricity generation.
+To address these challenges, a diverse and cost-effective portfolio of flexible resources will be essential. This portfolio will include a mix of generation, demand-side, and storage resources. The EU aims to reduce net greenhouse gas emissions by 55% by 2030 (compared to 1990 levels) and achieve carbon neutrality by 2050, necessitating a faster decarbonization of electricity generation across the EU.
+One critical opportunity lies in better aligning electricity consumption in residential and commercial buildings with the needs and resources of the grid. Buildings account for approximately 40% of the EU's total energy consumption and are responsible for over a third of the EU's energy-related greenhouse gas emissions. For decades, targeted efforts have improved energy efficiency in these buildings, however the pace of change is rather slow. Additionally, the load of some buildings has been managed to reduce electric power use during peak demand times, when the grid is most stressed, expensive to operate, and often has the highest CO2 emissions. Nevertheless, the total number of buildings participating in such schemes is negligible. 
 
-Buildings, which represent ~40% of the EU’s total energy consumption and over one-third of energy-related GHG emissions, present a key opportunity. Although progress has been made in improving energy efficiency, the uptake of demand-response capabilities and distributed energy resources (DERs) remains limited.
+There are further opportunities to better coordinate building electricity use, particularly by integrating the growing number of buildings equipped with Distributed Energy Resources (DERs) with grid conditions to address the evolving challenges on the power system. The adoption of new energy technologies by consumers will introduce opportunities for enhancing the efficiency and flexibility of electricity consumption, benefiting both building owners and occupants, as well as the broader distribution system.
+
+In this light, Intelligent Grid-Forming Buildings (iGFBs) are equipped with smart technologies that enable two-way communication between users and the electricity as well as heating “grid” (network). This facilitates the continuous optimization of energy use for grid services, occupant needs and preferences, climate mitigation, and cost reductions. iGFBs can play a crucial role in enhancing affordability and reliability across the EU power system. Moreover, they can reduce greenhouse gas emissions through lower overall energy use and increased demand flexibility, which aids in the integration of renewable generation. The contributions of iGFBs can be categorized into five areas: improving energy efficiency, shedding power load, shifting power load, modulating power load, and self-consuming through power generation using DERs.
+
+iGFBs primarily offer economic value and autonomy directly to electricity and heating energy consumers. iGFB consumers have the information and means to lower their consumption when prices are high, ultimately resulting in lower bills. Essentially, they enable an economic strategy that aligns consumer behavior with the operational realities of electricity supply, promoting a more stable and efficient energy distribution system. From another perspective, iGFBs modernize, the well-known from the past, practice of electricity consumption during night, leveraging lower pricing due to reduced demand and the difficulty in rapidly adjusting electricity generation from base-load power plants. This practice, reflected in time-of-use tariffs, incentivized consumers to shift their usage, optimizing grid efficiency, reducing waste, and lowering individual energy bills. Nowadays this practice needs to be adapted to a much more multidimensional energy landscape.
 
 ### Why Do We Need iGFBs: Social, Economic, and Technological Importance
 
+Intelligent grid-forming buildings represent a transformative approach to energy management, leveraging advanced technologies to enable two-way communication between buildings, energy grids, and market players. This dynamic interaction facilitates the exchange of critical information, such as energy consumption patterns, building certifications, occupant preferences, and installed equipment. From social, economic, and technological perspectives, these buildings offer significant benefits that align with sustainability goals and modern energy demands.
+
+Social Perspective
+
+Enhanced Energy Accessibility and Community Resilience
+Intelligent grid-forming buildings contribute to greater energy accessibility by dynamically adjusting energy use based on real-time grid signals. For example, during peak demand periods or emergencies, these buildings can reduce stress on the grid by sharing energy across interconnected systems. This fosters community resilience and prevents blackouts.
+
+Improved Quality of Life
+By integrating smart technologies like predictive control algorithms and IoT platforms, these buildings ensure optimal indoor conditions such as air quality and temperature regulation. This enhances occupant comfort while addressing modern needs for flexible spaces.
+
+Promoting Sustainability Awareness
+The active participation of occupants in energy efficiency programs facilitated by intelligent systems encourages behavioral changes toward sustainable practices. These systems empower individuals to make informed decisions about their energy consumption.
+
+Support for Renewable Energy Transition
+Intelligent systems facilitate higher penetration of renewable energy sources by balancing supply-demand fluctuations and optimizing storage solutions. This accelerates decarbonization efforts while ensuring reliable power delivery
+
+Economic Perspective
+
+Cost Savings Through Energy Optimization
+Grid-forming buildings reduce operational costs by optimizing energy use based on real-time price signals and participating in demand response programs. They also enable selling surplus electricity back to the grid during high-value periods, creating additional revenue streams.
+
+Avoidance of Infrastructure Costs
+By reducing peak demand and enhancing grid stability, these buildings minimize the need for expensive infrastructure upgrades. Their ability to dynamically respond to changing conditions lowers the risk of outages and associated costs.
+
+Market Integration Opportunities
+Intelligent buildings enable participation in energy markets through ancillary services like frequency regulation and demand-side management. This aligns incentives among stakeholders—utilities, building owners, and occupants—while driving profitability.
+
+Technological Perspective
+
+Advanced Power Control Systems
+Grid-forming technologies utilize advanced control algorithms and hardware designs to ensure optimal performance and reliability. They enhance grid stability by managing bidirectional energy flows from renewable sources like solar panels or battery storage systems.
+
+Integration with Smart Grids
+These buildings act as key components within smart grids by enabling seamless communication between suppliers and consumers. This interaction improves grid efficiency through real-time monitoring, predictive analytics, and automated responses to disturbances.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%DRAFT
 Intelligent Grid-Forming Buildings (iGFBs) are equipped with smart technologies enabling two-way communication with the energy grid. This allows dynamic energy optimization for:
 
 - Grid services  
@@ -52,7 +96,9 @@ iGFBs create value for energy consumers by:
 - Reducing costs via time-sensitive consumption  
 - Increasing autonomy through onsite generation and storage  
 - Supporting broader grid stability and efficiency  
-- Enhancing the utility of time-of-use tariffs in a modern energy landscape  
+- Enhancing the utility of time-of-use tariffs in a modern energy landscape
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%DRAFT
 
 ### Examples of Existing iGFBs
 
