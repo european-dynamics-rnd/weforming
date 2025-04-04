@@ -81,7 +81,11 @@ These buildings act as key components within smart grids by enabling seamless co
 
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%DRAFT
+
+
 Intelligent Grid-Forming Buildings (iGFBs) are equipped with smart technologies enabling two-way communication with the energy grid. This allows dynamic energy optimization for:
 
 - Grid services  
@@ -98,12 +102,61 @@ iGFBs create value for energy consumers by:
 - Supporting broader grid stability and efficiency  
 - Enhancing the utility of time-of-use tariffs in a modern energy landscape
 
+- 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%DRAFT
 
 ### Examples of Existing iGFBs
 
+Examples of existing iGFBs
+
+1. BuildNet Project (FP7), https://cordis.europa.eu/project/id/307608, 
+•	Description: Develops optimizing controllers to coordinate power flow between networks of smart buildings and the grid.
+•	Use Cases: Utilizes thermal storage, on-site microgeneration, and EV capacities to provide critical services like wind capacity firming and congestion relief.
+•	Details of Interest: Implements model predictive control (MPC) for real-time energy optimization, supporting renewable energy integration
+
+3. SRI2MARKET Project, https://sri2market.eu/ 
+Description: Promotes the uptake of Smart Readiness Indicators (SRI) for intelligent building systems.
+•	Use Cases: Facilitates tools for calculating SRI scores to optimize demand response capabilities across multiple EU member states.
+•	Details of Interest: Focuses on national-tailored implementations to enhance building-grid interactions
+
+5. EVELIXIA Project, https://www.evelixia-project.eu/ 
+•	Description: Makes EU building stock energy-efficient, connected to grids, and flexible for tailored energy use based on occupant needs.
+•	Use Cases: Integrates sensors and controls to improve participation in demand response programs while enhancing connectivity with the grid.
+•	Details of Interest: Focuses on large-scale deployment across diverse building typologies
+
+7. PHOENIX Project, https://eu-phoenix.eu/ 
+•	Description: Focuses on upgrading legacy building systems with ICT solutions, sensors, and data analytics to enhance energy management.
+•	Use Cases: Integrates smart buildings into demand response programs by enabling real-time communication with the grid and optimizing energy consumption.
+•	Details of Interest: Demonstrated significant improvements in Smart Readiness Indicator (SRI) scores across demo sites in Europe
+
+8. BuildON Project, https://buildon-project.eu/ 
+•	Description: Develops a Smart Transformer Toolbox to improve energy performance and facilitate integration of heterogeneous systems and technologies.
+•	Use Cases: Enables buildings to actively participate in grid services, including demand response, through advanced energy management systems.
+•	Details of Interest: Provides scalable solutions applicable across diverse building typologies
+
+9. SMARTeeSTORY Project, https://www.smarteestory.eu/ 
+•	Description: Uses deep reinforcement learning algorithms to detect user archetypes for optimizing energy use in historic buildings.
+•	Use Cases: Adapts energy consumption based on occupant preferences while enabling participation in demand response programs.
+•	Details of Interest: Focuses on non-residential historic buildings in Latvia, Spain, and the Netherlands
+
+10. REScoopVPP – Virtual Power Plant for Energy Communities, https://www.rescoopvpp.eu/ 
+•	Description: Aggregates renewable energy sources from multiple buildings into virtual power plants for grid services.
+•	Use Cases: Provides flexibility services to the grid by managing energy generation, storage, and consumption across connected buildings.
+•	Details of Interest: Promotes community-driven renewable energy integration
+
+11. Danube InGrid Project, https://danubeingrid.eu/ 
+•	Description: Enhances cross-border electricity network management through advanced data collection systems.
+•	Use Cases: Facilitates demand response by improving data exchange between DSOs and smart buildings while optimizing energy flows.
+•	Details of Interest: Focuses on integrating renewables into the grid while enhancing flexibility
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%DRAFT
 Examples will be explored in the [Integration](#igfb-integration) section, including pilot projects across Luxembourg, Portugal, Croatia, Belgium, Spain, Germany, and a cross-pilot interoperability demonstration.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%DRAFT
 ---
 
 ## iGFB Technological Enablers
