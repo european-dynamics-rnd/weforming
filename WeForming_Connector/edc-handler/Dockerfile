@@ -18,6 +18,6 @@ ENV DB_USERNAME_ENV=${DB_USERNAME}
 ENV DB_PASSWORD_ENV=${DB_PASSWORD}
 
 RUN touch ./entrypoint.sh
-RUN echo "java -jar ./app.jar --db.ip=${DB_IP_ENV} --db.port=${DB_PORT_ENV} --db.name=${DB_NAME_ENV} --db.username=${DB_USERNAME_ENV} --db.password=${DB_PASSWORD_ENV} --sofia.uri=http://weforming-middleware.eurodyn.com:15502/api --connector.url=http://provider-edc-handler " > ./entrypoint.sh
+RUN echo "java -jar ./app.jar --db.ip=${DB_IP_ENV} --db.port=${DB_PORT_ENV} --db.name=${DB_NAME_ENV} --db.username=${DB_USERNAME_ENV} --db.password=${DB_PASSWORD_ENV} --sofia.uri=https://weforming-mid.eurodyn.com/api --connector.url=http://provider-edc-handler " > ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 CMD ./entrypoint.sh
