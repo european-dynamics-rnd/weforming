@@ -1,4 +1,5 @@
-FROM openjdk:17-alpine
+FROM openjdk:17-slim  
+#FROM openjdk:17-alpine
 
 EXPOSE 15588
 

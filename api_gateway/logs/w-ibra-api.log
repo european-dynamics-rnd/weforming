@@ -1,0 +1,60 @@
+2025-05-30T09:22:54.508493+0200 | INFO | app.main:lifespan | Starting application version 1.0.0 | startup
+2025-05-30T09:51:57.347050+0200 | INFO | app.main:lifespan | Shutting down application | shutdown
+2025-05-30T10:33:18.930833+0200 | INFO | app.main:lifespan | Starting application version 1.0.0 | startup
+2025-05-30T10:33:21.167149+0200 | INFO | app.api.middleware.requests_logging:add_request_id_middleware | New request. Client Address(host='127.0.0.1', port=64530), method GET, path / | dd18603d-00e2-4fc0-a115-02b78da39409
+2025-05-30T10:33:21.167641+0200 | INFO | app.api.middleware.requests_logging:add_request_id_middleware | Request completed. status_code 404, process_time=0.00s | dd18603d-00e2-4fc0-a115-02b78da39409
+2025-05-30T10:33:24.378442+0200 | INFO | app.api.middleware.requests_logging:add_request_id_middleware | New request. Client Address(host='127.0.0.1', port=64530), method GET, path /docs | ebfcdac3-2467-4b4f-8ddd-9a33629d84bf
+2025-05-30T10:33:24.379752+0200 | INFO | app.api.middleware.requests_logging:add_request_id_middleware | Request completed. status_code 200, process_time=0.00s | ebfcdac3-2467-4b4f-8ddd-9a33629d84bf
+2025-05-30T10:33:24.489079+0200 | INFO | app.api.middleware.requests_logging:add_request_id_middleware | New request. Client Address(host='127.0.0.1', port=64530), method GET, path /openapi.json | 45ccde0d-f2df-4260-9d36-a8397989d6ac
+2025-05-30T10:33:24.502840+0200 | INFO | app.api.middleware.requests_logging:add_request_id_middleware | Request completed. status_code 200, process_time=0.01s | 45ccde0d-f2df-4260-9d36-a8397989d6ac
+2025-05-30T10:45:45.476662+0200 | INFO | app.main:lifespan | Shutting down application | shutdown
+2025-05-30T10:53:55.309065+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T10:53:55.324134+0200 | INFO | app.api.clients.http.base:request | Preparing and executing HTTP call | n/a
+2025-05-30T10:53:55.324236+0200 | DEBUG | app.api.clients.http.base:request | HTTP Call to https://weforming-mid.eurodyn.com/api/user/auth/token | n/a
+2025-05-30T10:53:55.566102+0200 | ERROR | app.api.clients.http.base:request | HTTPStatusError - Client error '400 Bad Request' for url 'https://weforming-mid.eurodyn.com/api/user/auth/token'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400 | n/a
+2025-05-30T11:06:38.961983+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:06:38.977167+0200 | INFO | app.api.clients.http.base:request | Preparing and executing HTTP call | n/a
+2025-05-30T11:06:38.977268+0200 | DEBUG | app.api.clients.http.base:request | HTTP Call to https://weforming-mid.eurodyn.com/api/user/auth/token | n/a
+2025-05-30T11:06:39.268397+0200 | ERROR | app.api.clients.http.base:request | HTTPStatusError - Client error '400 Bad Request' for url 'https://weforming-mid.eurodyn.com/api/user/auth/token'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400 | n/a
+2025-05-30T11:07:15.661071+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:07:15.676928+0200 | INFO | app.api.clients.http.base:request | Preparing and executing HTTP call | n/a
+2025-05-30T11:07:15.677010+0200 | DEBUG | app.api.clients.http.base:request | HTTP Call to https://weforming-mid.eurodyn.com/api/user/auth/token | n/a
+2025-05-30T11:07:15.951807+0200 | ERROR | app.api.clients.http.base:request | HTTPStatusError - Client error '400 Bad Request' for url 'https://weforming-mid.eurodyn.com/api/user/auth/token'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400 | n/a
+2025-05-30T11:09:54.213837+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:09:54.236812+0200 | INFO | app.api.clients.http.base:request | Preparing and executing HTTP call | n/a
+2025-05-30T11:09:54.236922+0200 | DEBUG | app.api.clients.http.base:request | HTTP Call to https://weforming-mid.eurodyn.com/api/user/auth/token | n/a
+2025-05-30T11:09:54.480138+0200 | ERROR | app.api.clients.http.base:request | HTTPStatusError - Client error '400 Bad Request' for url 'https://weforming-mid.eurodyn.com/api/user/auth/token'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400 | n/a
+2025-05-30T11:16:14.298890+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:18:11.745818+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:19:02.146190+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:20:39.201341+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:30:25.764787+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:33:25.087892+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:37:26.114548+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:38:15.754254+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:38:26.583243+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:41:00.427167+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:43:43.308871+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:44:55.157072+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:45:04.633497+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:46:14.516305+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:46:32.623153+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:47:05.871736+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:48:52.854998+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:49:30.159821+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:51:31.328778+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:52:22.812268+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:55:57.868824+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:56:16.531992+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:56:31.224145+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T11:56:59.100296+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T12:01:29.290395+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T12:02:38.876559+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T12:04:14.442119+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T12:06:35.286655+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T12:08:51.667197+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
+2025-05-30T12:08:57.601811+0200 | INFO | app.api.services.auth:dataspace_login | Logging in with username: testuser | n/a
