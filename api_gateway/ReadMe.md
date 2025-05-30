@@ -63,6 +63,14 @@ Update the configuration of the [Settings](/api_gateway/app/config/environment_v
 
 ---
 
+## Running the application
+
+To start up the app simply run the following command in the terminal
+```bash
+cd api_gateway
+uvicorn app.main:app
+```
+
 ## 🧪 Running Tests
 
 ```bash
