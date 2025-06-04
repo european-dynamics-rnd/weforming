@@ -163,7 +163,21 @@ Examples will be explored in the [Integration](#igfb-integration) section, inclu
 
 - **Building Digital Platforms**: Foundational software to manage, monitor, and optimize building energy use.  
 - **Real-time Controllers**: Coordinate operations across multiple energy assets in real-time.  
-- **Electrical and Thermal Power Processing Hubs**: Manage the conversion, distribution, and storage of energy within buildings.  
+- **Electrical and Thermal Power Processing Hubs**: Manage the conversion, distribution, and storage of energy within buildings.
+
+- Multi-modular multi-port power processing hubs, often referred to as multi-port converters or energy routers, are advanced power electronic systems designed to integrate and manage multiple energy sources and loads within a district or microgrid. These hubs enable efficient energy flow control between various inputs and outputs, such as renewable energy sources, energy storage systems, and the utility grid, facilitating optimal energy management at a district level. Their modularity allows for scalability and flexibility, accommodating different energy sources and demands while maintaining system reliability and efficiency.
+
+A key feature of these hubs is their ability to handle multiple power ports simultaneously, allowing bidirectional power flow and independent control of each port. This capability is crucial for integrating diverse energy carriers (e.g., DC and AC sources) and enabling peer-to-peer energy trading within microgrids or districts. The use of partial power processing (PPP) technology in some multi-port converters reduces power losses by processing only a portion of the total power electronically while the rest is transferred directly, thus improving overall efficiency and power density. Control strategies, such as automatic power direction control, enhance operational safety and efficiency by dynamically managing power flows without manual intervention, particularly during emergencies or grid disturbances.
+
+In the context of district energy management, these hubs serve as critical nodes that coordinate energy generation, storage, and consumption. They support the integration of renewable energy sources like solar and wind, which are inherently intermittent, by balancing supply and demand through energy storage systems and flexible loads. This integration improves grid stability, reduces reliance on fossil fuels, and enhances the resilience of the local energy system. Moreover, the hubs facilitate advanced energy management functions such as demand response, frequency regulation, and voltage support, contributing to the overall efficiency and reliability of the district energy network.
+In WeForming, we've successfully developed and demonstrated a centralized power processing hub with significant energy storage capabilities. This hub integrates both 1st-life and 2nd-life batteries, alongside a hydrogen fuel cell (H2 FC).
+
+Rated at approximately 1 MW/1 MWh, our hub features a multi-modular, multi-port topology. This design enables efficient energy processing from various sources and precise regulation of internal power flows. It also effectively manages interaction with the electrical grid, incorporating novel grid-forming functionalities driven by state-of-the-art controllers (see following Figures).
+![image](https://github.com/user-attachments/assets/2ce9be5d-0c7c-41f8-abb6-bf56ac4d7fa7)
+
+![image](https://github.com/user-attachments/assets/e3092006-0a71-466a-a5e3-8aded6d2280c)
+
+  
 - **Buildings’ Digital Models and Digital Twins**: Provide real-time simulation and optimization tools.  
 - **AI/ML Tools**: Drive intelligent decision-making for energy use and coordination.  
 
