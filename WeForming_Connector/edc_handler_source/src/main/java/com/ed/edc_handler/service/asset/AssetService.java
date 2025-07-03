@@ -275,7 +275,7 @@ public class AssetService {
     public FileEntity fetchFileEntityWithRetries(String path) {
         FileEntity fileEntity = null;
         int retryCount = 0;
-        int maxRetries = 100;
+        int maxRetries = 1000;
         long retryDelay = 200;
         // Retry logic using a do-while loop
         do {
