@@ -1,5 +1,4 @@
-FROM openjdk:17-slim  
-#FROM openjdk:17-alpine
+FROM eclipse-temurin:21-jdk-noble
 
 EXPOSE 15588
 

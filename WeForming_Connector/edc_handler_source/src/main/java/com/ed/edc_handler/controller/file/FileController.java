@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,5 +55,28 @@ public class FileController {
                 .headers(headers)
                 .body(fileEntity);
     }
+
+//    @GetMapping("/content/{id}")
+//    public ResponseEntity<?> getFileById(@PathVariable String id) {
+//
+//
+//
+//        FileEntity fileEntity = fileService.getFileById(id);
+//        if (fileEntity == null) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Content-Disposition", "attachment; filename=" + fileEntity.getFileName());
+//
+//        return new HashMap<String, Object>() {{
+//            put("fileContent", fileContent);
+//        }};
+//
+//        return ResponseEntity.ok()
+//                .headers(headers)
+//                .body(fileEntity);
+//    }
+
+
 
 }
