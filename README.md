@@ -2,7 +2,7 @@ The WeForming project focuses on transforming conventional passive buildings int
 At the software level, WeForming establishes a unified digital framework through middleware, REST-based APIs, a canonical dataspace model, and a data services catalogue, ensuring seamless integration and semantic interoperability between heterogeneous devices and building systems. At the hardware level, the project validates real-time control solutions, power processing hubs, and thermal storage systems such as the Carnot Battery, all designed to enhance building-level flexibility and support grid services.
 Overall, WeForming builds an integrated, scalable architecture that enables buildings to become active, intelligent nodes within the energy ecosystem. By combining digital twins, predictive AI models, interoperable communication structures, and advanced energy hardware, the project sets the foundation for real-time operation, cross-platform compatibility, and future deployment of intelligent energy flexibility services across its demonstration sites.
 
-**[Middleware](./Middleware/)**  
+- **[Middleware](./Middleware/)**  
 
 - **[WeForming Connector](./WeForming_Connector/)**  
 
