@@ -17,6 +17,7 @@ public class CatalogRequestWithIdDTO {
     private Map<String, String> context;
 
     private String counterPartyAddress;
+    private String counterPartyId;
     private String protocol;
     private QuerySpec querySpec;
 

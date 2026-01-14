@@ -91,7 +91,6 @@ public class AssetService {
         }
 
         log.debug("*** Save File to EDC Handler");
-//        String filedata = (String) parameters.get("provide_data_obj").get("file");
         long fileSizeInByte = (long) (Math.ceil((double) fileData.length() / 4) * 3);
         FileEntity fileEntity = FileEntity.builder()
                 .id(id)
@@ -130,21 +129,21 @@ public class AssetService {
         this.connectorRestTemplate.post(assetDTO, connectorManagementUrl + "/v3/assets");
 
         log.debug("*** 3. Create Policy 'general-policy' if it does not Exist");
-        Object response  = this.connectorRestTemplate.get(connectorManagementUrl + "/v2/policydefinitions/general-policy");
+        Object response  = this.connectorRestTemplate.get(connectorManagementUrl + "/v3/policydefinitions/general-policy");
         if(response == null){
             PolicyDTO policyDTO = new PolicyDTO();
             policyDTO.setId("general-policy");
-            this.connectorRestTemplate.post(policyDTO, connectorManagementUrl + "/v2/policydefinitions");
+            this.connectorRestTemplate.post(policyDTO, connectorManagementUrl + "/v3/policydefinitions");
         }
 
         log.debug("***  4. Create Contract 'general-contract' if it does not Exist");
-        response  = this.connectorRestTemplate.get(connectorManagementUrl + "/v2/contractdefinitions/general-contract");
+        response  = this.connectorRestTemplate.get(connectorManagementUrl + "/v3/contractdefinitions/general-contract");
         if(response == null) {
             ContractDTO contractDTO = new ContractDTO();
             contractDTO.setId("general-contract");
             contractDTO.setAccessPolicyId("general-policy");
             contractDTO.setContractPolicyId("general-policy");
-            this.connectorRestTemplate.post(contractDTO, connectorManagementUrl + "/v2/contractdefinitions");
+            this.connectorRestTemplate.post(contractDTO, connectorManagementUrl + "/v3/contractdefinitions");
         }
 
         log.debug("*** Activate Data Offering to Central Registry By id="+ id);
@@ -178,6 +177,8 @@ public class AssetService {
         String providerConnectorProtocolUrl = (String) data.get(0).get("provider_connector_protocol_url"); // 8004
         String providerConnectorControlUrl = (String) data.get(0).get("provider_connector_control_url"); //8005
 
+        String providerConnectorDid = (String) data.get(0).get("provider_connector_did"); // 8004
+
         if(consumerConnectorPublicUrl.equals(providerConnectorPublicUrl)){
             log.debug("*** 4.9 Connectors are the same, so down nagotiate anything, just download file.");
             FileEntity fileEntity = fetchFileEntityWithRetries(consumerHandlerUrl + "/files/" + parameters.get("id"));
@@ -193,7 +194,8 @@ public class AssetService {
         log.debug("*** 5. Fetch Provider's Catalog");
         CatalogRequestWithIdDTO dataCatalogRequestWithIdDto = new CatalogRequestWithIdDTO(parameters.get("id"));
         dataCatalogRequestWithIdDto.setCounterPartyAddress(providerConnectorProtocolUrl);
-        Map response = (Map) this.connectorRestTemplate.post(dataCatalogRequestWithIdDto, consumerConnectorManagementUrl + "/v2/catalog/request/");
+        dataCatalogRequestWithIdDto.setCounterPartyId(providerConnectorDid);
+        Map response = (Map) this.connectorRestTemplate.post(dataCatalogRequestWithIdDto, consumerConnectorManagementUrl + "/v3/catalog/request/");
         Map dataset = (Map) response.get("dcat:dataset");
         Map policy;
         Object policiesObj = dataset.get("odrl:hasPolicy");
@@ -208,7 +210,7 @@ public class AssetService {
         ContractRequestDTO contractRequestDTO = new ContractRequestDTO();
         contractRequestDTO.setCounterPartyAddress(providerConnectorProtocolUrl );
         contractRequestDTO.getPolicy().setId(contractOfferId);
-        response = (Map) this.connectorRestTemplate.post(contractRequestDTO, consumerConnectorManagementUrl + "/v2/contractnegotiations");
+        response = (Map) this.connectorRestTemplate.post(contractRequestDTO, consumerConnectorManagementUrl + "/v3/contractnegotiations");
         String contractNegotiationId = (String) response.get("@id");
 
         log.debug("*** 7. Check negotiation status");
@@ -219,7 +221,7 @@ public class AssetService {
         transferRequestDto.setCounterPartyAddress(providerConnectorProtocolUrl);
         transferRequestDto.setContractId(contractAgreementId);
         transferRequestDto.getDataDestination().setBaseUrl(consumerHandlerPublicUrl+"/files/import");
-        response = (Map) this.connectorRestTemplate.post(transferRequestDto, consumerConnectorManagementUrl + "/v2/transferprocesses");
+        response = (Map) this.connectorRestTemplate.post(transferRequestDto, consumerConnectorManagementUrl + "/v3/transferprocesses");
 
         log.debug("*** Get Data for the frontend");
         FileEntity fileEntity = fetchFileEntityWithRetries(consumerHandlerUrl + "/files/" + parameters.get("id"));
@@ -243,7 +245,7 @@ public class AssetService {
         do {
             // Fetch the contract negotiation state
             Map<String, Object> response = (Map<String, Object>) this.connectorRestTemplate.get(
-                    consumerConnectorManagementUrl + "/v2/contractnegotiations/" + contractNegotiationId
+                    consumerConnectorManagementUrl + "/v3/contractnegotiations/" + contractNegotiationId
             );
 
             // Get the state of the contract negotiation
