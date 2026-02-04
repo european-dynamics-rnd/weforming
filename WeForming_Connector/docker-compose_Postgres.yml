@@ -1,7 +1,7 @@
 services:
 
-  provider-postgres:
-    container_name: provider-postgres
+  connector-postgres:
+    container_name: connector-postgres
     image: postgres:14.17-alpine
     restart: always
     user: postgres
@@ -12,7 +12,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=edc_store
     volumes: 
-      - provider-postgres:/var/lib/postgresql/data
+      - connector-postgres:/var/lib/postgresql/data
       - ./connector/postgres:/docker-entrypoint-initdb.d
     command: -p 8432
     healthcheck:   
@@ -21,9 +21,9 @@ services:
       timeout: 3s
       retries: 3
 
-  provider-connector:
-    container_name: provider-connector
-    image: eclipse-temurin:20-jdk
+  connector-app:
+    container_name: connector-app
+    image: eclipse-temurin:21-jdk
     restart: always
     ports:
       - 8001:8001
@@ -33,41 +33,92 @@ services:
       - 8005:8005
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
     environment:
       EDC_FS_CONFIG: /app/config.properties
     volumes:
       - ./connector/connector_0-1-2_Postgres.jar:/app/connector.jar
-      - ./connector/config/provider-config.properties:/app/config.properties
+      - ./connector/config/connector-config.properties:/app/config.properties
       - ./connector/config/cert.pfx:/app/cert.pfx
+      - ./test-keys:/app/test-keys
     depends_on:
-      provider-postgres:
+      connector-postgres:
         condition: service_healthy
-    entrypoint: ["java","-jar", "/app/connector.jar", "-Dedc.keystore=/app/cert.pfx"]
+    command: java -jar -Dedc.fs.config=/app/config.properties /app/connector.jar --log-level=DEBUG
 
-  provider-edc-handler:
+    
+  connector-identity-hub:
+    container_name: connector-identity-hub
+    image: eclipse-temurin:21-jdk
+    restart: always
+    ports:
+      - 7001:7001
+      - 7002:7002
+      - 7003:7003
+      - 7004:7004
+      - 7005:7005
+      - 7006:7006
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      EDC_FS_CONFIG: /app/config.properties
+    volumes:
+      - ./identity-hub/identity-hub.jar:/app/identity-hub.jar
+      - ./identity-hub/properties/connector.identity-hub.properties:/app/config.properties
+      - ./test-keys:/app/test-keys
+      - ./credentials:/app/credentials
+    depends_on:
+      connector-postgres:
+        condition: service_healthy
+    command: java -jar -Dedc.fs.config=/app/config.properties /app/identity-hub.jar --log-level=DEBUG
+ 
+  connector-edc-handler:
     environment:
       - JAVA_OPTS=-Xms256m -Xmx512m
     build:
       context: edc-handler
       args:
-        DB_IP: provider-postgres
+        DB_IP: connector-postgres
         DB_PORT: 8432
         DB_NAME: edc_store
         DB_USERNAME: postgres
         DB_PASSWORD: postgres
         SOFIA_URI: https://weforming-mid.eurodyn.com/api
-        CONNECTOR_URI: https://weforming-connector-server.eurodyn.com
+        CONNECTOR_URI: http://weforming-connector3-server.eurodyn.com
+        IDENTITYHUB_URI: http://weforming-connector3-server.eurodyn.com
+        INDY_URL: ${INDY_URL}
+        REGISTER_PARTICIPANT_X_API_KEY: ${REGISTER_PARTICIPANT_X_API_KEY}
+        REGISTER_PARTICIPANT_ID: ${REGISTER_PARTICIPANT_ID}
+        REGISTER_PARTICIPANT_PARTICIPANT_ID: ${REGISTER_PARTICIPANT_PARTICIPANT_DID}
+        REGISTER_PARTICIPANT_PARTICIPANT_DID: ${REGISTER_PARTICIPANT_PARTICIPANT_DID}
+        WALLET_PRIVATE_KEY: ${WALLET_PRIVATE_KEY}
       dockerfile: Dockerfile
-    image: provider-edc-handler
-    container_name: provider-edc-handler
+    image: connector-edc-handler
+    container_name: connector-edc-handler
+    volumes:
+      - ./test-keys:/app/test-keys
     ports:
       - "15588:15588"
     restart: always
+    depends_on:
+      connector-app:
+        condition: service_started
+      connector-identity-hub:
+        condition: service_started  
+      connector-postgres:
+        condition: service_healthy
+        
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    restart: always
+    ports:
+      - "9999:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
 
-  provider-postgres:
-    driver: local
-
-  consumer-postgres:
+  connector-postgres:
     driver: local

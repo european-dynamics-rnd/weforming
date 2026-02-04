@@ -1,6 +1,7 @@
 package com.ed.edc_handler.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -14,12 +15,17 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StartupRestRunner implements ApplicationRunner {
 
+    private final RestTemplate restTemplate;
     @Value("${connector.url}")
     private String connectorUrl;
+
+    @Value("${identityhub.url}")
+    private String identityhubUrl;
 
     @Value("${indy.url}")
     private String indyUrl;
@@ -42,10 +48,10 @@ public class StartupRestRunner implements ApplicationRunner {
     @Value("${registerParticipant.privateKey}")
     private String privateKey;
 
-    private final RestTemplate restTemplate;
-
     @Override
     public void run(ApplicationArguments args) {
+        try {
+
         Map<String, String> registerParticipantResponse = registerParticipant();
 
         if (registerParticipantResponse == null) {
@@ -61,6 +67,14 @@ public class StartupRestRunner implements ApplicationRunner {
         createSecret(clientSecret);
 
         registerIndyIdentity();
+
+        } catch (Exception e) {
+
+            log.warn(
+                    "Failed on registerIndyIdentity",
+                    e);
+        }
+
     }
 
     private Map<String, String> registerParticipant() {
@@ -106,10 +120,11 @@ public class StartupRestRunner implements ApplicationRunner {
 
         ResponseEntity<Map<String, String>> response =
                 restTemplate.exchange(
-                        connectorUrl + ":7003/api/identity/v1alpha/participants/",
+                        identityhubUrl + ":7003/api/identity/v1alpha/participants/",
                         HttpMethod.POST,
                         entity,
-                        new ParameterizedTypeReference<>() {}
+                        new ParameterizedTypeReference<>() {
+                        }
                 );
 
         return response.getBody();
@@ -139,7 +154,8 @@ public class StartupRestRunner implements ApplicationRunner {
                         connectorUrl + ":8003/management/v3/secrets",
                         HttpMethod.POST,
                         entity,
-                        new ParameterizedTypeReference<>() {}
+                        new ParameterizedTypeReference<>() {
+                        }
                 );
 
         return response.getBody();
@@ -203,7 +219,8 @@ public class StartupRestRunner implements ApplicationRunner {
                         indyUrl + participantId,
                         HttpMethod.POST,
                         entity,
-                        new ParameterizedTypeReference<>() {}
+                        new ParameterizedTypeReference<>() {
+                        }
                 );
 
         return response.getBody();
