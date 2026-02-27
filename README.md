@@ -6,9 +6,11 @@ Overall, WeForming builds an integrated, scalable architecture that enables buil
 
 - **[Middleware](./Middleware/)**  
 
-- **[WeForming Connector](./WeForming_Connector/)**  
+- **[WeForming Connector](./WeForming_Connector/)**
 
-- **[API Gateway](./api_gateway/)**  
+- **[WeForming Open Energy Services](./Open Energy Services/)**
+
+- **[API Gateway](./api_gateway/)**
 
 - **[Figures](./figures/)**  
 
