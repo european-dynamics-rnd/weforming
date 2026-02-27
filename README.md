@@ -14,6 +14,4 @@ Overall, WeForming builds an integrated, scalable architecture that enables buil
 
 - **[API Gateway](./api_gateway/)**
 
-- **[Figures](./figures/)**  
-
 - **[iGFB-pedia](./iGFB-pedia/)**  
