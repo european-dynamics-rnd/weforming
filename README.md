@@ -8,7 +8,7 @@ Overall, WeForming builds an integrated, scalable architecture that enables buil
 
 - **[WeForming Connector](./WeForming_Connector/)**
 
-- **[WeForming Open Energy Services](./Open Energy Services/)**
+- **[WeForming Open Energy Services]([./Open_Energy_Services/](https://github.com/european-dynamics-rnd/weforming/tree/master/Open%20Energy%20Services#weforming-open-energy-services))**
 
 - **[API Gateway](./api_gateway/)**
 
