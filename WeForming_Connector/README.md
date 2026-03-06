@@ -175,7 +175,36 @@ To provide data to a specific offering, you need to locate its UUID:
 
 ![An example image](my_offerings.png)
 
+## Additional Configuration (Landing Process)
 
+Before running the connector, participants must configure the credentials received during the Landing Process.
+
+### 1. Add Connector Keys
+
+Place the connector key pair obtained during the Landing Process inside the following directory:
+
+WeForming_Connector/test-keys
+
+Required files:
+
+connector-public.pem  
+connector-private.pem  
+
+### 2. Configure the Participant DID
+
+Open the configuration file:
+
+WeForming_Connector/connector/config/connector-config.properties
+
+Add the following properties using the DID assigned during the Landing Process:
+
+edc.participant.id=did...
+edc.iam.issuer.id=did...
+edc.iam.sts.oauth.client.id=did...
+edc.iam.sts.oauth.client.secret.alias=did...-sts-client-secret
+edc.iam.sts.publickey.id=did...#key-1
+
+Replace `did...` with the DID assigned to your organization.
 
 ### Provide Data Programmatically with a Python Sample script
 
