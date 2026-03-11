@@ -230,6 +230,7 @@ public class StartupRestRunner implements ApplicationRunner {
         return publicKeyPem
                 .replace("-----BEGIN PUBLIC KEY-----", "")
                 .replace("-----END PUBLIC KEY-----", "")
+                .replace("\\", "")          // <- remove escaped chars
                 .replaceAll("\\s+", "")
                 .trim();
     }
