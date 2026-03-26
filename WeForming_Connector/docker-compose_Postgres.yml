@@ -6,7 +6,7 @@ services:
     restart: always
     user: postgres
     ports:
-      - 8432:8432
+      - "8432:8432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -26,11 +26,11 @@ services:
     image: eclipse-temurin:21-jdk
     restart: always
     ports:
-      - 8001:8001
-      - 8002:8002
-      - 8003:8003
-      - 8004:8004
-      - 8005:8005
+      - "8001:8001"
+      - "8002:8002"
+      - "8003:8003"
+      - "8004:8004"
+      - "8005:8005"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file:
@@ -53,12 +53,12 @@ services:
     image: eclipse-temurin:21-jdk
     restart: always
     ports:
-      - 7001:7001
-      - 7002:7002
-      - 7003:7003
-      - 7004:7004
-      - 7005:7005
-      - 7006:7006
+      - "7001:7001"
+      - "7002:7002"
+      - "7003:7003"
+      - "7004:7004"
+      - "7005:7005"
+      - "7006:7006"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
