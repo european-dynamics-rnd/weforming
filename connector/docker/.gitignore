@@ -1,0 +1,4 @@
+data
+.env
+keys/*.pem
+credentials/*.json

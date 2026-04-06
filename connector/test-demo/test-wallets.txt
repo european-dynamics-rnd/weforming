@@ -1,0 +1,26 @@
+These are 3 tests wallets for the connectors.
+Do not use them in production. Only for test environment.
+
+--------------------------------------------
+
+[Trusted Issuer]
+
+Private key: 71dba676c3a978d1c49f86255ec21db655f8aaafe7392626ca121d037883ef65
+
+Address: 0xed088cb405441491c0d47dd9d7935671bd12cb24
+
+--------------------------------------------
+
+[Provider]
+
+Private key: 35e548a3104809d51e7d55e1a088b80036610bd475e44a497607d0c57ef8e4ed
+
+Address: 0x4ce8b7105877a67a5abdef241cf10cb897cc6c7f
+
+--------------------------------------------
+
+[Consumer]
+
+Private key: 0d025574a65b1079ce6c6c0292370922642aba86e17c1c07268e3b68ff5cf775
+
+Address: 0x44f5e09b2c0889be51f562a1c25c4ae046994bec

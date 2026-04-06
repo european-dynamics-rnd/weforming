@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"issuer-script/node_modules": true,
+			"data/**": true,
+		},
+		"cSpell.words": [
+			"indy",
+			"weforming"
+		],
+	}
+}

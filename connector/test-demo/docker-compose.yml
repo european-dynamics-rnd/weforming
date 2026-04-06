@@ -1,0 +1,289 @@
+version: '3.7'
+
+services:
+
+  # HyperLedger Besu Test Node
+
+  weforming_test_besu:
+    hostname: besu
+    ports:
+      - '8545:8545'
+    networks:
+      - weforming_test_net
+    image: 'hyperledger/besu'
+    user: "root:root"
+    restart: unless-stopped
+    volumes:
+      - ./data/besu:/opt/besu/database
+      - ./besu/genesis:/etc/besu/genesis
+      - ./besu/keys:/etc/besu/keys
+    environment:
+      - BESU_USER_NAME=root
+    command:
+      --data-path=/opt/besu/database
+      --genesis-file=/etc/besu/genesis/genesis.json
+      --node-private-key-file=/etc/besu/keys/key
+      --rpc-http-max-active-connections=999999
+      --min-gas-price=0
+      --revert-reason-enabled=true
+      --rpc-http-enabled 
+      --rpc-http-host=0.0.0.0
+      --rpc-http-api=ETH,NET,WEB3
+      --rpc-ws-enabled 
+      --rpc-ws-host=0.0.0.0
+      --rpc-ws-port=8546
+      --rpc-ws-api=ETH,NET,WEB3
+      --host-allowlist="*" 
+      --rpc-http-cors-origins="all"
+      --logging=INFO
+
+  weforming_test_id_proxy_db:
+    hostname: identity-proxy-db
+    image: mongo
+    ports:
+      - '27017'
+    networks:
+      - weforming_test_net
+    restart: unless-stopped
+    volumes:
+      - ./data/proxy-db:/data/db
+    command: --quiet
+  
+  weforming_test_id_proxy:
+    depends_on:
+      - weforming_test_id_proxy_db
+      - weforming_test_besu
+    hostname: identity-proxy
+    ports:
+      - '8080:8080'
+    networks:
+      - weforming_test_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    image: 'ghcr.io/airinstitute/weforming-identity-proxy'
+    restart: unless-stopped
+    volumes:
+      - ./data/proxy:/server/data
+    environment:
+      - DB_TYPE=MONGO
+      - DB_MONGO_URL=mongodb://identity-proxy-db:27017/wf_identity_proxy
+      - RUN_TASKS=YES
+      - SERVER_EXTERNAL_URI=http://localhost:8080
+      - ALLOWED_ORIGINS=http://localhost:8080
+      - AUTH_API_USERS=user:admin:admin_secret
+      - USING_PROXY=NO
+      - WORKERS_NUMBER=1
+      - SERVE_SWAGGER_DOCS=YES
+      - LOG_REQUESTS=YES
+      - SERVER_HTTP_PORT=8080
+      - REDIS_ENABLED=NO
+      - BLOCKCHAIN_NODE_PROTOCOL=http
+      - BLOCKCHAIN_NODE_RPC_URL=http://besu:8545
+      - BLOCKCHAIN_CHAIN_ID=1337
+      - BLOCKCHAIN_DID_NAMESPACE=wf
+      - BLOCKCHAIN_SYNC=YES
+      - BLOCKCHAIN_SYNC_FIRST_BLOCK=0
+      - BLOCKCHAIN_SYNC_RANGE=100
+      - BLOCKCHAIN_SYNC_TIME=1000
+      - CONTRACT_VALIDATOR_CONTROL=0x0000000000000000000000000000000000007777
+      - CONTRACT_ACCOUNT_CONTROL=0x0000000000000000000000000000000000008888
+      - CONTRACT_ROLE_CONTROL=0x0000000000000000000000000000000000006666
+      - CONTRACT_UPGRADE_CONTROL=0x0000000000000000000000000000000000009999
+      - CONTRACT_ETHEREUM_DID_REGISTRY=0x0000000000000000000000000000000000018888
+      - CONTRACT_INDY_DID_REGISTRY=0x0000000000000000000000000000000000003333
+      - CONTRACT_SCHEMA_REGISTRY=0x0000000000000000000000000000000000005555
+      - CONTRACT_CREDENTIAL_DEFINITION_REGISTRY=0x0000000000000000000000000000000000004444
+      - CONTRACT_LEGACY_MAPPING_REGISTRY=0x0000000000000000000000000000000000017777
+      - CONTRACT_UNIVERSAL_DID_RESOLVER=0x0000000000000000000000000000000000019999
+      - INITIAL_TRUSTEES=0xed088cb405441491c0d47dd9d7935671bd12cb24
+      - INITIAL_STEWARDS=0x4ce8b7105877a67a5abdef241cf10cb897cc6c7f,0x44f5e09b2c0889be51f562a1c25c4ae046994bec
+      - INITIAL_VALIDATORS=0xB9480543dc2E156E8603d1cb668c46e34b8E6C04:0xed088cb405441491c0d47dd9d7935671bd12cb24
+      - TAILS_FILES_PATH=/server/data/tails
+      - TAILS_SERVER_BASE_URL=http://localhost:8080/tails/
+
+  weforming_test_issuer_script:
+    depends_on:
+      - weforming_test_id_proxy
+    networks:
+      - weforming_test_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    image: 'weforming-test-issuer-script'
+    build:
+      context: ./issuer-script/.
+    volumes:
+      - ./test-keys:/test-keys:ro
+    environment:
+      - ISSUER_PUBLIC_KEY_FILE=/test-keys/issuer-public.pem
+      - IDENTITY_PROXY_URL=http://identity-proxy:8080/
+      - IDENTITY_PROXY_API_TOKEN=admin_secret
+      - ISSUER_WALLET_ADDRESS=0xed088cb405441491c0d47dd9d7935671bd12cb24
+      - ISSUER_WALLET_PRIVATE_KEY=71dba676c3a978d1c49f86255ec21db655f8aaafe7392626ca121d037883ef65
+
+  weforming_test_postgres_provider:
+    hostname: dbprovider
+    image: postgres:14.17-alpine
+    restart: unless-stopped
+    user: root
+    networks:
+      - weforming_test_net
+    ports:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=edc_store
+    volumes: 
+      - ./data/db-provider:/var/lib/postgresql/data
+    command: -p 5432
+    healthcheck:   
+      test: ["CMD-SHELL", "pg_isready -p 5432 -U postgres"]
+      interval: 1s
+      timeout: 10s
+      retries: 60
+
+  weforming_test_provider:
+    depends_on:
+      weforming_test_id_proxy:
+        condition: service_started
+      weforming_test_postgres_provider:
+        condition: service_healthy
+    hostname: provider
+    image: weforming-connector
+    build:
+      context: ../source/.
+    restart: unless-stopped
+    ports:
+     - 8081
+     - 8082
+     - 8083:8083
+     - 8084:8084
+     - 8085:8085
+     - 7081
+     - 7082
+     - '7083:7083'
+     - 7084
+     - 7085
+     - 7086
+    networks:
+      - weforming_test_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./test-keys:/test-keys:ro
+      - ./credentials/provider:/credentials:ro
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PARTICIPANT_ID=did:indy:besu:wf:0x4ce8b7105877a67a5abdef241cf10cb897cc6c7f
+      - PUBLIC_KEY=/test-keys/provider-public.pem
+      - PRIVATE_KEY=/test-keys/provider-private.pem
+      - IDENTITY_PROXY_URL=http://identity-proxy:8080/
+      - IDENTITY_PROXY_TOKEN=admin_secret
+      - VC_FOLDER=/credentials
+      - TRUSTED_ISSUERS=did:indy:besu:wf:0xed088cb405441491c0d47dd9d7935671bd12cb24
+      - DID_OWNER_PRIVATE_KEY=35e548a3104809d51e7d55e1a088b80036610bd475e44a497607d0c57ef8e4ed
+      - DID_PUBLIC_KEY_TYPE=Ed25519Signature2018
+      - CONNECTOR_PORT_BASE=8081
+      - CONNECTOR_PORT_PUBLIC=8082
+      - CONNECTOR_PORT_CONTROL=8083
+      - CONNECTOR_PORT_MANAGEMENT=8084
+      - CONNECTOR_PORT_PROTOCOL=8085
+      - IH_PORT_BASE=7081
+      - IH_PORT_CREDENTIALS=7082
+      - IH_PORT_IDENTITY=7083
+      - IH_PORT_DID=7084
+      - IH_PORT_VERSION=7085
+      - IH_PORT_STS=7086
+      - CREDENTIAL_SERVICE_EXTERNAL_URL=http://provider:7082
+      - PROTOCOL_EXTERNAL_URL=http://provider:8085
+      - POSTGRES_HOST=dbprovider
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB_NAME=edc_store
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  weforming_test_postgres_consumer:
+    hostname: dbconsumer
+    image: postgres:14.17-alpine
+    restart: unless-stopped
+    user: root
+    networks:
+      - weforming_test_net
+    ports:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=edc_store
+    volumes: 
+      - ./data/db-consumer:/var/lib/postgresql/data
+    command: -p 5432
+    healthcheck:   
+      test: ["CMD-SHELL", "pg_isready -p 5432 -U postgres"]
+      interval: 1s
+      timeout: 10s
+      retries: 60
+
+  weforming_test_consumer:
+    depends_on:
+      weforming_test_id_proxy:
+        condition: service_started
+      weforming_test_postgres_consumer:
+        condition: service_healthy
+    hostname: consumer
+    image: weforming-connector
+    build:
+      context: ../source/.
+    restart: unless-stopped
+    ports:
+     - 8091
+     - 8092
+     - 8093:8093
+     - 8094:8094
+     - 8095:8095
+     - 7091
+     - 7092
+     - '7093:7093'
+     - 7094
+     - 7095
+     - 7096
+    networks:
+      - weforming_test_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./test-keys:/test-keys:ro
+      - ./credentials/consumer:/credentials:ro
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PARTICIPANT_ID=did:indy:besu:wf:0x44f5e09b2c0889be51f562a1c25c4ae046994bec
+      - PUBLIC_KEY=/test-keys/consumer-public.pem
+      - PRIVATE_KEY=/test-keys/consumer-private.pem
+      - IDENTITY_PROXY_URL=http://identity-proxy:8080/
+      - IDENTITY_PROXY_TOKEN=admin_secret
+      - VC_FOLDER=/credentials
+      - TRUSTED_ISSUERS=did:indy:besu:wf:0xed088cb405441491c0d47dd9d7935671bd12cb24
+      - DID_OWNER_PRIVATE_KEY=0d025574a65b1079ce6c6c0292370922642aba86e17c1c07268e3b68ff5cf775
+      - DID_PUBLIC_KEY_TYPE=Ed25519Signature2018
+      - CONNECTOR_PORT_BASE=8091
+      - CONNECTOR_PORT_PUBLIC=8092
+      - CONNECTOR_PORT_CONTROL=8093
+      - CONNECTOR_PORT_MANAGEMENT=8094
+      - CONNECTOR_PORT_PROTOCOL=8095
+      - IH_PORT_BASE=7091
+      - IH_PORT_CREDENTIALS=7092
+      - IH_PORT_IDENTITY=7093
+      - IH_PORT_DID=7094
+      - IH_PORT_VERSION=7095
+      - IH_PORT_STS=7096
+      - CREDENTIAL_SERVICE_EXTERNAL_URL=http://consumer:7092
+      - PROTOCOL_EXTERNAL_URL=http://consumer:8095
+      - POSTGRES_HOST=dbconsumer
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB_NAME=edc_store
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+networks:
+  weforming_test_net:
+    driver: bridge
