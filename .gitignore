@@ -1,0 +1,6 @@
+### Code Editors ###
+.vscode/
+.idea/
+
+### Mac OS ###
+.DS_Store
