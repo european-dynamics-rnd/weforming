@@ -1,7 +1,8 @@
 /_backup
 
-### VS Code ###
+### Code Editors ###
 .vscode/
+.idea/
 
 ### Mac OS ###
 .DS_Store
