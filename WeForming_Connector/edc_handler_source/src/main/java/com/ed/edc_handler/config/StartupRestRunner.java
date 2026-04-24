@@ -41,9 +41,6 @@ public class StartupRestRunner implements ApplicationRunner {
     @Value("${registerParticipant.participantDid}")
     private String participantDid;
 
-    @Value("${registerParticipant.participantId}")
-    private String participantId;
-
     @Value("${registerParticipant.publicKeyPem}")
     private String publicKeyPem;
 
@@ -218,7 +215,7 @@ public class StartupRestRunner implements ApplicationRunner {
 
         ResponseEntity<Map<String, Object>> response =
                 restTemplate.exchange(
-                        indyUrl + participantId,
+                        indyUrl + participantDid,
                         HttpMethod.POST,
                         entity,
                         new ParameterizedTypeReference<>() {
