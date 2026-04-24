@@ -1,0 +1,343 @@
+{
+  "info": {
+    "_postman_id": "d0e54ebb-ffe0-496b-9b53-bf69dd81052c",
+    "name": "TestWeformingConnectors",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "6426498"
+  },
+  "item": [
+    {
+      "name": "[Provider] Create Asset",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"@context\": [\n            \"https://w3id.org/edc/connector/management/v0.0.1\"\n        ],\n        \"@id\": \"{{TEST_ASSET_ID}}\",\n        \"@type\": \"Asset\",\n        \"properties\": {\n            \"name\": \"Test asset\",\n            \"description\": \"Example asset description.\",\n            \"contenttype\": \"application/json\"\n        },\n        \"dataAddress\": {\n            \"@type\": \"DataAddress\",\n            \"type\": \"HttpData\",\n            \"baseUrl\": \"https://jsonplaceholder.typicode.com/todos\"\n        }\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROVIDER_API_URL}}v3/assets",
+          "host": [
+            "{{PROVIDER_API_URL}}v3"
+          ],
+          "path": [
+            "assets"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Provider] Get assets",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"@context\": {\n            \"@vocab\": \"https://w3id.org/edc/v0.0.1/ns/\"\n        },\n        \"@type\": \"QuerySpec\",\n        \"offset\": 0,\n        \"limit\": 10\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROVIDER_API_URL}}v3/assets/request",
+          "host": [
+            "{{PROVIDER_API_URL}}v3"
+          ],
+          "path": [
+            "assets",
+            "request"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Provider] Create Policy",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"@context\": {\n            \"@vocab\": \"https://w3id.org/edc/v0.0.1/ns/\",\n            \"odrl\": \"http://www.w3.org/ns/odrl/2/\"\n        },\n        \"@id\": \"{{TEST_POLICY_ID}}\",\n        \"policy\": {\n            \"@context\": \"http://www.w3.org/ns/odrl.jsonld\",\n            \"@type\": \"Set\",\n            \"permission\": [\n                {\n                    \"action\": \"use\"\n                }\n            ],\n            \"prohibition\": [],\n            \"obligation\": []\n        }\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROVIDER_API_URL}}v3/policydefinitions",
+          "host": [
+            "{{PROVIDER_API_URL}}v3"
+          ],
+          "path": [
+            "policydefinitions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Provider] Get Policy Definitions",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"@context\": {\n            \"@vocab\": \"https://w3id.org/edc/v0.0.1/ns/\"\n        },\n        \"@type\": \"QuerySpec\",\n        \"offset\": 0,\n        \"limit\": 10\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROVIDER_API_URL}}v3/policydefinitions/request",
+          "host": [
+            "{{PROVIDER_API_URL}}v3"
+          ],
+          "path": [
+            "policydefinitions",
+            "request"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Provider] Create Contract Definition",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"@context\": {\n            \"@vocab\": \"https://w3id.org/edc/v0.0.1/ns/\"\n        },\n        \"@id\": \"{{TEST_CONTRACT_ID}}\",\n        \"accessPolicyId\": \"{{TEST_POLICY_ID}}\",\n        \"contractPolicyId\": \"{{TEST_POLICY_ID}}\",\n        \"assetsSelector\": []\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROVIDER_API_URL}}v3/contractdefinitions",
+          "host": [
+            "{{PROVIDER_API_URL}}v3"
+          ],
+          "path": [
+            "contractdefinitions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Provider] Get contract definitions",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"@context\": {\n            \"@vocab\": \"https://w3id.org/edc/v0.0.1/ns/\"\n        },\n        \"@type\": \"QuerySpec\",\n        \"offset\": 0,\n        \"limit\": 10\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROVIDER_API_URL}}v3/contractdefinitions/request",
+          "host": [
+            "{{PROVIDER_API_URL}}v3"
+          ],
+          "path": [
+            "contractdefinitions",
+            "request"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Consumer] Request Provider Catalog",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"@context\": [\n            \"https://w3id.org/edc/connector/management/v0.0.1\"\n        ],\n        \"@type\": \"CatalogRequest\",\n        \"counterPartyAddress\": \"{{PROVIDER_DSP_URL}}\",\n        \"counterPartyId\": \"{{PROVIDER_ID}}\",\n        \"protocol\": \"dataspace-protocol-http\",\n        \"querySpec\": {\n            \"offset\": 0,\n            \"limit\": 50\n        }\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{CONSUMER_API_URL}}v3/catalog/request",
+          "host": [
+            "{{CONSUMER_API_URL}}v3"
+          ],
+          "path": [
+            "catalog",
+            "request"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Consumer] Start negotiation with provider",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"@context\": [\n            \"https://w3id.org/edc/connector/management/v0.0.1\"\n        ],\n        \"@type\": \"ContractRequest\",\n        \"counterPartyAddress\": \"{{PROVIDER_DSP_URL}}\",\n        \"counterPartyId\": \"{{PROVIDER_ID}}\",\n        \"protocol\": \"dataspace-protocol-http\",\n        \"policy\": {\n            \"@type\": \"Offer\",\n            \"@id\": \"{{TEST_OFFER_ID}}\",\n            \"assigner\": \"{{PROVIDER_ID}}\",\n            \"target\": \"{{TEST_ASSET_ID}}\",\n            \"permission\": [\n                {\n                    \"action\": \"use\"\n                }\n            ],\n            \"prohibition\": [],\n            \"obligation\": []\n        }\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{CONSUMER_API_URL}}v3/contractnegotiations",
+          "host": [
+            "{{CONSUMER_API_URL}}v3"
+          ],
+          "path": [
+            "contractnegotiations"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Consumer] Get Negotiations",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"@context\": {\n            \"@vocab\": \"https://w3id.org/edc/v0.0.1/ns/\"\n        },\n        \"@type\": \"QuerySpec\",\n        \"offset\": 0,\n        \"limit\": 10,\n        \"sortOrder\": \"DESC\",\n        \"sortField\": \"createdAt\"\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{CONSUMER_API_URL}}v3/contractnegotiations/request",
+          "host": [
+            "{{CONSUMER_API_URL}}v3"
+          ],
+          "path": [
+            "contractnegotiations",
+            "request"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Provider] Get Negotiations",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"@context\": {\n            \"@vocab\": \"https://w3id.org/edc/v0.0.1/ns/\"\n        },\n        \"@type\": \"QuerySpec\",\n        \"offset\": 0,\n        \"limit\": 10,\n        \"sortOrder\": \"DESC\",\n        \"sortField\": \"createdAt\"\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROVIDER_API_URL}}v3/contractnegotiations/request",
+          "host": [
+            "{{PROVIDER_API_URL}}v3"
+          ],
+          "path": [
+            "contractnegotiations",
+            "request"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "PROVIDER_ID",
+      "value": "did:indy:besu:wf:0x4ce8b7105877a67a5abdef241cf10cb897cc6c7f"
+    },
+    {
+      "key": "CONSUMER_ID",
+      "value": "did:indy:besu:wf:0x44f5e09b2c0889be51f562a1c25c4ae046994bec"
+    },
+    {
+      "key": "PROVIDER_API_URL",
+      "value": "http://127.0.0.1:8084/management/"
+    },
+    {
+      "key": "CONSUMER_API_URL",
+      "value": "http://127.0.0.1:8094/management/"
+    },
+    {
+      "key": "PROVIDER_DSP_URL",
+      "value": "http://host.docker.internal:8085/protocol"
+    },
+    {
+      "key": "CONSUMER_DSP_URL",
+      "value": "http://host.docker.internal:8095/protocol"
+    },
+    {
+      "key": "TEST_ASSET_ID",
+      "value": "test-asset"
+    },
+    {
+      "key": "TEST_POLICY_ID",
+      "value": "test-policy"
+    },
+    {
+      "key": "TEST_CONTRACT_ID",
+      "value": "test-contract"
+    },
+    {
+      "key": "TEST_OFFER_ID",
+      "value": "dGVzdC1jb250cmFjdA==:dGVzdC1hc3NldA==:dGVzdC1vZmZlcg==",
+      "description": "The offer ID has 3 parts separated by colons, and each part encoded as Base64: The contract definition ID, The asset ID and the offer ID (random)"
+    }
+  ]
+}

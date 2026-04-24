@@ -1,0 +1,137 @@
+# WeForming Docker Deployment
+
+services:
+
+  # Database (Postgres)
+
+  weforming_connector_db:
+    hostname: db
+    image: postgres:14.17-alpine
+    restart: unless-stopped
+    user: postgres
+    networks:
+      - weforming_connector_net
+    ports:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=edc_store
+    volumes: 
+      - wf_db_data:/var/lib/postgresql/data
+    command: -p 5432
+    healthcheck:   
+      test: ["CMD-SHELL", "pg_isready -p 5432 -U postgres"]
+      interval: 1s
+      timeout: 10s
+      retries: 60
+
+  # Connector (Connector + Identity Hub + Launcher)
+
+  weforming_connector:
+    depends_on:
+      weforming_connector_db:
+        condition: service_healthy
+    hostname: connector
+    image: ${CONNECTOR_IMAGE:-weforming-connector}
+    build:
+      context: ../source/.
+    restart: unless-stopped
+    ports:
+     - '${CONNECTOR_PORT_BASE:-8081}:${CONNECTOR_PORT_BASE:-8081}'
+     - '${CONNECTOR_PORT_PUBLIC:-8082}:${CONNECTOR_PORT_PUBLIC:-8082}'
+     - '${CONNECTOR_PORT_CONTROL:-8083}:${CONNECTOR_PORT_CONTROL:-8083}'
+     - '${CONNECTOR_PORT_MANAGEMENT:-8084}:${CONNECTOR_PORT_MANAGEMENT:-8084}'
+     - '${CONNECTOR_PORT_PROTOCOL:-8085}:${CONNECTOR_PORT_PROTOCOL:-8085}'
+     - '${IH_PORT_BASE:-7081}:${IH_PORT_BASE:-7081}'
+     - '${IH_PORT_CREDENTIALS:-7082}:${IH_PORT_CREDENTIALS:-7082}'
+     - '${IH_PORT_IDENTITY:-7083}:${IH_PORT_IDENTITY:-7083}'
+     - '${IH_PORT_DID:-7084}:${IH_PORT_DID:-7084}'
+     - '${IH_PORT_VERSION:-7085}:${IH_PORT_VERSION:-7085}'
+     - '${IH_PORT_STS:-7086}:${IH_PORT_STS:-7086}'
+    networks:
+      - weforming_connector_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./keys:/keys:ro
+      - ./credentials:/credentials:ro
+    environment:
+      # Log level
+
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+
+      # Java
+
+      - JAVA_RUNTIME_FLAGS_CONNECTOR=${JAVA_RUNTIME_FLAGS_CONNECTOR:-}
+      - JAVA_RUNTIME_FLAGS_IH=${JAVA_RUNTIME_FLAGS_IH:-}
+
+      # Identity
+
+      - PARTICIPANT_ID=${PARTICIPANT_ID}
+
+      # Identity proxy
+      
+      - IDENTITY_PROXY_URL=${IDENTITY_PROXY_URL}
+      - IDENTITY_PROXY_TOKEN=${IDENTITY_PROXY_TOKEN:-}
+
+      # Credentials
+
+      - VC_FOLDER=/credentials
+      - TRUSTED_ISSUERS=did:indy:besu:wf:0xed088cb405441491c0d47dd9d7935671bd12cb24
+
+      # Keys
+
+      - PUBLIC_KEY=/keys/${PUBLIC_KEY_NAME:-public.pem}
+      - PRIVATE_KEY=/keys/${PRIVATE_KEY_NAME:-private.pem}
+      
+      - DID_PUBLIC_KEY_TYPE=${DID_PUBLIC_KEY_TYPE:-Ed25519VerificationKey2018}
+
+      # Wallet private key
+
+      - DID_OWNER_PRIVATE_KEY=${DID_OWNER_PRIVATE_KEY:-}
+
+      # Ports (connector)
+
+      - CONNECTOR_PORT_BASE=${CONNECTOR_PORT_BASE:-8081}
+      - CONNECTOR_PORT_PUBLIC=${CONNECTOR_PORT_PUBLIC:-8082}
+      - CONNECTOR_PORT_CONTROL=${CONNECTOR_PORT_CONTROL:-8083}
+      - CONNECTOR_PORT_MANAGEMENT=${CONNECTOR_PORT_MANAGEMENT:-8084}
+      - CONNECTOR_PORT_PROTOCOL=${CONNECTOR_PORT_PROTOCOL:-8085}
+
+      # Ports (Identity Hub)
+
+      - IH_PORT_BASE=${IH_PORT_BASE:-7081}
+      - IH_PORT_CREDENTIALS=${IH_PORT_CREDENTIALS:-7082}
+      - IH_PORT_IDENTITY=${IH_PORT_IDENTITY:-7083}
+      - IH_PORT_DID=${IH_PORT_DID:-7084}
+      - IH_PORT_VERSION=${IH_PORT_VERSION:-7085}
+      - IH_PORT_STS=${IH_PORT_STS:-7086}
+
+      # External URLs
+
+      - CREDENTIAL_SERVICE_EXTERNAL_URL=${CREDENTIAL_SERVICE_EXTERNAL_URL}
+      - PROTOCOL_EXTERNAL_URL=${PROTOCOL_EXTERNAL_URL}
+
+      # Postgres
+
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB_NAME=edc_store
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+
+      # Other secrets
+      
+      - IH_SUPER_USER_SECRET=${IH_SUPER_USER_SECRET:-super-secret-key}
+
+# Networks
+
+networks:
+  weforming_connector_net:
+    driver: bridge
+
+# Volumes
+
+volumes:
+  wf_db_data:
