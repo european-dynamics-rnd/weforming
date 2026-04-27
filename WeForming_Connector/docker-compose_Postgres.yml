@@ -69,19 +69,19 @@ services:
 
       # Identity proxy
 
-      - IDENTITY_PROXY_URL=${INDY_URL}
-      - IDENTITY_PROXY_TOKEN=${REGISTER_PARTICIPANT_X_API_KEY}
+      - IDENTITY_PROXY_URL=${IDENTITY_PROXY_URL}
+      - IDENTITY_PROXY_TOKEN=${IDENTITY_PROXY_TOKEN}
 
       # Credentials
 
       - VC_FOLDER=/credentials
-      - TRUSTED_ISSUERS=${TRUSTED_ISSUERS:-${REGISTER_PARTICIPANT_PARTICIPANT_DID}}
+      - TRUSTED_ISSUERS=${TRUSTED_ISSUERS:-}
 
       # Keys
 
       - PUBLIC_KEY=/keys/${CONNECTOR_PUBLIC_KEY_FILE:-connector-public.pem}
       - PRIVATE_KEY=/keys/${CONNECTOR_PRIVATE_KEY_FILE:-connector-private.pem}
-      - DID_PUBLIC_KEY_TYPE=${DID_PUBLIC_KEY_TYPE:-Ed25519Signature2018}
+      - DID_PUBLIC_KEY_TYPE=${DID_PUBLIC_KEY_TYPE:-Ed25519VerificationKey2018}
 
       # Wallet private key
 
@@ -139,7 +139,7 @@ services:
       - SOFIA_URI=${SOFIA_URI:-https://weforming-mid.eurodyn.com/api}
       - CONNECTOR_URI=${CONNECTOR_URI:-http://weforming-connector}
       - IDENTITYHUB_URI=${IDENTITYHUB_URI:-http://weforming-connector}
-      - INDY_URL=${INDY_URL}
+      - INDY_URL=${IDENTITY_PROXY_URL}
       - REGISTER_PARTICIPANT_X_API_KEY=${REGISTER_PARTICIPANT_X_API_KEY}
       - REGISTER_PARTICIPANT_ID=${REGISTER_PARTICIPANT_ID}
       - REGISTER_PARTICIPANT_PARTICIPANT_DID=${REGISTER_PARTICIPANT_PARTICIPANT_DID}
