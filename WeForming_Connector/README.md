@@ -33,6 +33,8 @@ cd weforming/WeForming_Connector
 ```
 
 ### Start the services
+Before starting, copy `.env.example` to `.env` and fill in the required values for your deployment.
+
 Option A: Using Docker Compose directly
 ```
 docker compose -f docker-compose_Postgres.yml up --build -d
