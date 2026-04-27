@@ -1,4 +1,5 @@
 /_backup
+/.env
 
 ### Code Editors ###
 .vscode/
