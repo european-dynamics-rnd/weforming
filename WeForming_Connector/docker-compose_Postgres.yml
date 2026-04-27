@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     user: postgres
     ports:
-      - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
+      - "${POSTGRES_PORT:-5432}:5432"
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
@@ -18,7 +18,7 @@ services:
     volumes: 
       - connector-postgres:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -p ${POSTGRES_PORT:-5432} -U ${POSTGRES_USER:-postgres}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -37,9 +37,9 @@ services:
     ports:
       - '${CONNECTOR_PORT_BASE:-8001}:${CONNECTOR_PORT_BASE:-8001}'
       - '${CONNECTOR_PORT_PUBLIC:-8002}:${CONNECTOR_PORT_PUBLIC:-8002}'
-      - '${CONNECTOR_PORT_CONTROL:-8005}:${CONNECTOR_PORT_CONTROL:-8005}'
-      - '${CONNECTOR_PORT_MANAGEMENT:-8003}:${CONNECTOR_PORT_MANAGEMENT:-8003}'
-      - '${CONNECTOR_PORT_PROTOCOL:-8004}:${CONNECTOR_PORT_PROTOCOL:-8004}'
+      - '${CONNECTOR_PORT_CONTROL:-8003}:${CONNECTOR_PORT_CONTROL:-8003}'
+      - '${CONNECTOR_PORT_MANAGEMENT:-8004}:${CONNECTOR_PORT_MANAGEMENT:-8004}'
+      - '${CONNECTOR_PORT_PROTOCOL:-8005}:${CONNECTOR_PORT_PROTOCOL:-8005}'
       - '${IH_PORT_BASE:-7001}:${IH_PORT_BASE:-7001}'
       - '${IH_PORT_CREDENTIALS:-7002}:${IH_PORT_CREDENTIALS:-7002}'
       - '${IH_PORT_IDENTITY:-7003}:${IH_PORT_IDENTITY:-7003}'
@@ -91,9 +91,9 @@ services:
 
       - CONNECTOR_PORT_BASE=${CONNECTOR_PORT_BASE:-8001}
       - CONNECTOR_PORT_PUBLIC=${CONNECTOR_PORT_PUBLIC:-8002}
-      - CONNECTOR_PORT_CONTROL=${CONNECTOR_PORT_CONTROL:-8005}
-      - CONNECTOR_PORT_MANAGEMENT=${CONNECTOR_PORT_MANAGEMENT:-8003}
-      - CONNECTOR_PORT_PROTOCOL=${CONNECTOR_PORT_PROTOCOL:-8004}
+      - CONNECTOR_PORT_CONTROL=${CONNECTOR_PORT_CONTROL:-8003}
+      - CONNECTOR_PORT_MANAGEMENT=${CONNECTOR_PORT_MANAGEMENT:-8004}
+      - CONNECTOR_PORT_PROTOCOL=${CONNECTOR_PORT_PROTOCOL:-8005}
 
       # Ports (Identity Hub)
 
@@ -107,12 +107,12 @@ services:
       # External URLs
 
       - CREDENTIAL_SERVICE_EXTERNAL_URL=${CREDENTIAL_SERVICE_EXTERNAL_URL:-http://localhost:7002}
-      - PROTOCOL_EXTERNAL_URL=${PROTOCOL_EXTERNAL_URL:-http://localhost:8004}
+      - PROTOCOL_EXTERNAL_URL=${PROTOCOL_EXTERNAL_URL:-http://localhost:8005}
 
       # Postgres
 
       - POSTGRES_HOST=${POSTGRES_HOST:-connector-postgres}
-      - POSTGRES_PORT=${POSTGRES_PORT:-8432}
+      - POSTGRES_PORT=5432
       - POSTGRES_DB_NAME=${POSTGRES_DB_NAME:-edc_store}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
@@ -132,7 +132,7 @@ services:
     environment:
       - JAVA_OPTS=${HANDLER_JAVA_OPTS:--Xms256m -Xmx512m}
       - DB_IP=${POSTGRES_HOST:-connector-postgres}
-      - DB_PORT=${POSTGRES_PORT:-8432}
+      - DB_PORT=5432
       - DB_NAME=${POSTGRES_DB_NAME:-edc_store}
       - DB_USERNAME=${POSTGRES_USER:-postgres}
       - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
@@ -149,7 +149,7 @@ services:
     volumes:
       - ./test-keys:/app/test-keys
     ports:
-      - "${HANDLER_PORT:-15588}:${HANDLER_PORT:-15588}"
+      - "${HANDLER_PORT:-15588}:15588"
     restart: unless-stopped
     depends_on:
       weforming-connector:
