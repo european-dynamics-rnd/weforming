@@ -52,20 +52,6 @@ func pemToBase64(pem string) string {
 	return strings.Join(spl2[1:len(spl2)-1], "")
 }
 
-func checkPublicKeyEqual(actualKey string, expectedKey string) bool {
-	if actualKey == expectedKey {
-		return true
-	}
-
-	// Condition to bypass bug that turns public keys into lowercase
-	// (solved in recent version)
-	if actualKey == strings.ToLower(actualKey) && actualKey == strings.ToLower(expectedKey) {
-		return true
-	}
-
-	return false
-}
-
 func doGetRequest(requestURL string, headers map[string]string) (int, string, error) {
 	req, err := http.NewRequest(http.MethodGet, requestURL, nil)
 	if err != nil {

@@ -149,7 +149,7 @@ func checkDidDocument(config *LauncherConfig, logger *glog.Logger) bool {
 	if len(res.Configuration.PublicKeys) > 0 {
 		pk := res.Configuration.PublicKeys[0]
 
-		if checkPublicKeyEqual(pk.Base64, publicKeyBase64) && pk.Type == config.identity.didPublicKeyType && pk.Purposes.Authentication {
+		if pk.Base64 == publicKeyBase64 && pk.Type == config.identity.didPublicKeyType && pk.Purposes.Authentication {
 			hasPublicKey = true
 		}
 	}
