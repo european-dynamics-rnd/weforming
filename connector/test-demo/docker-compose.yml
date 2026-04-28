@@ -24,6 +24,7 @@ services:
       --genesis-file=/etc/besu/genesis/genesis.json
       --node-private-key-file=/etc/besu/keys/key
       --rpc-http-max-active-connections=999999
+      --tx-pool-enable-balance-check=false
       --min-gas-price=0
       --revert-reason-enabled=true
       --rpc-http-enabled 
