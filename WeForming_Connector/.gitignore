@@ -1,6 +1,12 @@
 /_backup
 /.env
 
+### Ignore local keys and credentials
+/test-keys/*
+!/test-keys/.gitkeep
+/credentials/*
+!/credentials/.gitkeep
+
 ### Code Editors ###
 .vscode/
 .idea/
