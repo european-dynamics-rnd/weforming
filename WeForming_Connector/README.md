@@ -53,10 +53,17 @@ Each connector instance exposes a set of well-defined API endpoints on dedicated
 
 | Description | Port | Path | Purpose |
 | :---------------- | :------: | :---- | :---- |
-| Management | 8003 | /management | Used for internal configuration, extension registration, and system health |
-| Control | 8005 | /control | Handles contract negotiation and transfer process coordination  |
-| Protocol | 8004 | /protocol | Manages IDS protocol communication between connectors |
-| Public | 8002 | /public | Used for exposing open APIs and endpoint registration |
+| Connector Base | 8001 | /api | Default connector API endpoint |
+| Connector Public | 8002 | /public | Used for exposing open APIs and endpoint registration |
+| Connector Management | 8003 | /management | Used for internal configuration, extension registration, and system health |
+| Connector Protocol | 8004 | /protocol | Manages IDS protocol communication between connectors |
+| Connector Control | 8005 | /control | Handles contract negotiation and transfer process coordination |
+| Identity Hub Base | 7001 | /api | Default Identity Hub API endpoint |
+| Identity Hub Credentials | 7002 | /api/credentials | Handles credential management endpoints |
+| Identity Hub Identity | 7003 | /api/identity | Exposes identity-related endpoints |
+| Identity Hub DID | 7004 | / | Serves DID-related endpoints |
+| Identity Hub Version | 7005 | /api/version | Exposes version information |
+| Identity Hub STS | 7006 | /api/sts | Handles security token service endpoints |
 | Handler | 15588 | /handler | Backend service endpoint for file storage and pull request reception |
 
 **Important note**: Make sure these ports are open and not occupied by other processes on your system.
@@ -105,30 +112,34 @@ Before running the connector, participants must configure the credentials receiv
 
 Place the connector key pair obtained during the Landing Process inside the following directory:
 
-WeForming_Connector/test-keys
+`WeForming_Connector/test-keys`
 
 Required files:
 
-connector-public.pem  
-connector-private.pem  
+`connector-public.pem`  
+`connector-private.pem`  
 
-### 2. Configure the Participant DID
+### 2. Add Verifiable Credentials
 
-Open the configuration file:
+Add the user-issued Verifiable Credentials received during the Onboarding Process to:
 
-WeForming_Connector/connector/config/connector-config.properties
+`WeForming_Connector/credentials`
 
-Add the following properties using the DID assigned during the Landing Process:
+Make sure the required credential files are present in that directory before starting the stack.
 
-```
-edc.participant.id=did...
-edc.iam.issuer.id=did...
-edc.iam.sts.oauth.client.id=did...
-edc.iam.sts.oauth.client.secret.alias=did...-sts-client-secret
-edc.iam.sts.publickey.id=did...#key-1
-```
+### 3. Custom configurations
 
-Replace `did...` with the DID assigned to your organization.
+Copy `.env.example` to `.env` and populate the required values for your deployment.
+
+This includes the values received during the Landing Process and any environment-specific settings, such as:
+
+- Participant DIDs
+- Wallet private keys and related secrets
+- Connector and Identity Hub ports
+- Database and host configuration
+- External URLs and reverse proxy settings
+
+Review the generated `.env` carefully before starting the connector.
 
 ## Provide Data to WeForming Programmatically
 
