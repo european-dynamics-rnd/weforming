@@ -104,9 +104,9 @@ Here’s a real-world configuration example:
 | Protocol | https://weforming-connector-sec.eurodyn.com/protocol | http://weforming-connector-server.eurodyn.com:8004 |
 | Control | https://weforming-connector-sec.eurodyn.com/control | http://weforming-connector-server.eurodyn.com:8005 |
 
-## Additional Configuration (Landing Process)
+## Additional Configuration (Onboarding Process)
 
-Before running the connector, participants must configure the credentials received during the Landing Process.
+Before running the connector, participants must configure the credentials received during the Onboarding Process.
 
 ### 1. Add Connector Keys
 
