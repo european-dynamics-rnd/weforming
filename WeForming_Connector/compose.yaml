@@ -127,35 +127,29 @@ services:
     build:
       context: edc-handler
       dockerfile: Dockerfile
+
     image: connector-edc-handler
     container_name: connector-edc-handler
+
+    restart: unless-stopped
+
+    networks:
+      - weforming_connector_network
+
+    ports:
+      - "${HANDLER_PORT:-15588}:15588"
+
+    volumes:
+      - ./test-keys:/app/test-keys:ro
+
     environment:
-      - JAVA_OPTS=${HANDLER_JAVA_OPTS:--Xms256m -Xmx512m}
       - DB_IP=${POSTGRES_HOST:-connector-postgres}
       - DB_PORT=5432
       - DB_NAME=${POSTGRES_DB_NAME:-edc_store}
       - DB_USERNAME=${POSTGRES_USER:-postgres}
       - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - SOFIA_URI=${SOFIA_URI:-https://weforming-mid.eurodyn.com/api}
-      - CONNECTOR_URI=${CONNECTOR_URI:-http://weforming-connector}
-      - IDENTITYHUB_URI=${IDENTITYHUB_URI:-http://weforming-connector}
-      - INDY_URL=${IDENTITY_PROXY_URL}
-      - REGISTER_PARTICIPANT_X_API_KEY=${REGISTER_PARTICIPANT_X_API_KEY}
-      - REGISTER_PARTICIPANT_ID=${REGISTER_PARTICIPANT_ID}
-      - REGISTER_PARTICIPANT_PARTICIPANT_DID=${REGISTER_PARTICIPANT_PARTICIPANT_DID}
-      - WALLET_PRIVATE_KEY=${WALLET_PRIVATE_KEY}
-    networks:
-      - weforming_connector_network
-    volumes:
-      - ./test-keys:/app/test-keys
-    ports:
-      - "${HANDLER_PORT:-15588}:15588"
-    restart: unless-stopped
-    depends_on:
-      weforming-connector:
-        condition: service_started  
-      connector-postgres:
-        condition: service_healthy
+
+      - MIDDLEWARE_URI=${MIDDLEWARE_URI:-http://weforming-middleware.eurodyn.com:15502/api}
 
   # Dozzle (Container log viewer)
 
