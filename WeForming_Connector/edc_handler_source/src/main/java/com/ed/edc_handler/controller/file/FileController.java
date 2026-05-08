@@ -56,27 +56,4 @@ public class FileController {
                 .body(fileEntity);
     }
 
-//    @GetMapping("/content/{id}")
-//    public ResponseEntity<?> getFileById(@PathVariable String id) {
-//
-//
-//
-//        FileEntity fileEntity = fileService.getFileById(id);
-//        if (fileEntity == null) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Content-Disposition", "attachment; filename=" + fileEntity.getFileName());
-//
-//        return new HashMap<String, Object>() {{
-//            put("fileContent", fileContent);
-//        }};
-//
-//        return ResponseEntity.ok()
-//                .headers(headers)
-//                .body(fileEntity);
-//    }
-
-
-
 }

@@ -102,11 +102,11 @@ public class AssetService {
       //  fileService.importFile(fileEntity);
         this.connectorRestTemplate.post(fileEntity, handlerUrl + "/files/import");
 
-        log.debug("*** 1. Register Dataplane to Connector");
-        DataPlaneInstanceDTO dataPlane = new DataPlaneInstanceDTO();
-        dataPlane.setUrl(connectorControlUrl + "/transfer");
-        dataPlane.getProperties().put("publicApiUrl", connectorPublicUrl + "/");
-        this.connectorRestTemplate.post(dataPlane, connectorManagementUrl + "/v2/dataplanes");
+//        log.debug("*** 1. Register Dataplane to Connector");
+//        DataPlaneInstanceDTO dataPlane = new DataPlaneInstanceDTO();
+//        dataPlane.setUrl(connectorControlUrl + "/transfer");
+//        dataPlane.getProperties().put("publicApiUrl", connectorPublicUrl + "/");
+//        this.connectorRestTemplate.post(dataPlane, connectorManagementUrl + "/v2/dataplanes");
 
         log.debug("*** 2. Create Asset");
         AssetDTO assetDTO = new AssetDTO();
@@ -169,6 +169,7 @@ public class AssetService {
         String consumerConnectorManagementUrl = (String) data.get(0).get("consumer_connector_management_url"); // 8003
         String consumerConnectorProtocolUrl = (String) data.get(0).get("consumer_connector_protocol_url"); // 8004
         String consumerConnectorControlUrl = (String) data.get(0).get("consumer_connector_control_url"); //8005
+        String consumerConnectorId = (String) data.get(0).get("consumer_connector_did");
 
         String providerHandlerUrl = (String) data.get(0).get("provider_handler_url");
         String providerHandlerPublicUrl = (String) data.get(0).get("provider_handler_public_url");
@@ -177,7 +178,7 @@ public class AssetService {
         String providerConnectorProtocolUrl = (String) data.get(0).get("provider_connector_protocol_url"); // 8004
         String providerConnectorControlUrl = (String) data.get(0).get("provider_connector_control_url"); //8005
 
-        String providerConnectorDid = (String) data.get(0).get("provider_connector_did"); // 8004
+        String providerConnectorDid = (String) data.get(0).get("provider_connector_did");
 
         if(consumerConnectorPublicUrl.equals(providerConnectorPublicUrl)){
             log.debug("*** 4.9 Connectors are the same, so down nagotiate anything, just download file.");
@@ -208,8 +209,12 @@ public class AssetService {
 
         log.debug("*** 6. Negotiate a contract");
         ContractRequestDTO contractRequestDTO = new ContractRequestDTO();
-        contractRequestDTO.setCounterPartyAddress(providerConnectorProtocolUrl );
+        contractRequestDTO.setCounterPartyAddress(providerConnectorProtocolUrl);
+        contractRequestDTO.setCounterPartyId(providerConnectorDid);
         contractRequestDTO.getPolicy().setId(contractOfferId);
+        contractRequestDTO.getPolicy().setAssigner(providerConnectorDid);
+        contractRequestDTO.getPolicy().setAssignee(consumerConnectorId);
+        contractRequestDTO.getPolicy().setTarget(parameters.get("id"));
         response = (Map) this.connectorRestTemplate.post(contractRequestDTO, consumerConnectorManagementUrl + "/v3/contractnegotiations");
         String contractNegotiationId = (String) response.get("@id");
 
@@ -308,23 +313,6 @@ public class AssetService {
     }
 
     public Map getMyAssets(int page) {
-
-//        CatalogRequestWithIdDTO dataCatalogRequestWithIdDto = new CatalogRequestWithIdDTO("");
-//        dataCatalogRequestWithIdDto.setCounterPartyAddress(this.connectorUrl + ":8004/protocol");
-//
-//        dataCatalogRequestWithIdDto.getQuerySpec().setFilterExpression(new ArrayList<>());
-//
-//        CatalogRequestWithIdDTO.QuerySpec.FilterExpression fromOperator = new CatalogRequestWithIdDTO.QuerySpec.FilterExpression();
-//        fromOperator.setOperandLeft("created_on");
-//        fromOperator.setOperator(">");
-//        fromOperator.setOperandRight(from);
-//        dataCatalogRequestWithIdDto.getQuerySpec().getFilterExpression().add(fromOperator);
-//
-//        CatalogRequestWithIdDTO.QuerySpec.FilterExpression toOperator = new CatalogRequestWithIdDTO.QuerySpec.FilterExpression();
-//        toOperator.setOperandLeft("created_on");
-//        toOperator.setOperator("<");
-//        toOperator.setOperandRight(to);
-//        dataCatalogRequestWithIdDto.getQuerySpec().getFilterExpression().add(toOperator);
 
         CatalogRequestDTO catalogRequestDTO = new CatalogRequestDTO();
         catalogRequestDTO.setCounterPartyAddress(this.connectorUrl + ":8004/protocol");

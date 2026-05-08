@@ -19,8 +19,8 @@ public class SofiaRestTemplate {
 
     private final RestTemplate restTemplate;
 
-    @Value("${sofia.uri}")
-    private String sofiaUri;
+    @Value("${middleware.uri}")
+    private String middlewareUri;
 
     public SofiaRestTemplate(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -39,7 +39,7 @@ public class SofiaRestTemplate {
 
         ResponseEntity<Map> response =
                 restTemplate.exchange(
-                        URI.create(sofiaUri + "/dataset/v2/provide-data"),
+                        URI.create(middlewareUri + "/dataset/v2/provide-data"),
                         HttpMethod.POST,
                         httpEntity,
                         new ParameterizedTypeReference<Map>() {

@@ -17,8 +17,8 @@ import java.util.Map;
 @Service
 public class CustomQueryRestTemplate {
 
-    @Value("${sofia.uri}")
-    private String sofiaUri;
+    @Value("${middleware.uri}")
+    private String middlewareUri;
 
     private final RestTemplate restTemplate;
 
@@ -38,7 +38,7 @@ public class CustomQueryRestTemplate {
 
         String parametersString = String.join("&", parametersList );
         ResponseEntity<List<Map<String, Object>>> response =
-                restTemplate.exchange(this.sofiaUri + "/custom-query/data-objects?id=" + id + "&" + parametersString ,
+                restTemplate.exchange(this.middlewareUri + "/custom-query/data-objects?id=" + id + "&" + parametersString ,
                 HttpMethod.GET,
                 httpEntity,
                 new ParameterizedTypeReference<List<Map<String, Object>>>() {}
@@ -56,7 +56,7 @@ public class CustomQueryRestTemplate {
                 new HttpEntity<Map<String, String>>(parameters, httpHeaders);
 
         ResponseEntity<Object> response =
-                restTemplate.exchange(this.sofiaUri + "/custom-query/data-objects?id=b3336c63-b949-4c8e-a3f6-ab42e37c08f5" ,
+                restTemplate.exchange(this.middlewareUri + "/custom-query/data-objects?id=b3336c63-b949-4c8e-a3f6-ab42e37c08f5" ,
                         HttpMethod.POST,
                         httpEntity,
                         new ParameterizedTypeReference<Object>() {}
@@ -76,7 +76,7 @@ public class CustomQueryRestTemplate {
                 new HttpEntity<Map<String, String>>(parameters, httpHeaders);
 
         ResponseEntity<Object> response =
-                restTemplate.exchange(this.sofiaUri + "/custom-query/data-objects/" + path ,
+                restTemplate.exchange(this.middlewareUri + "/custom-query/data-objects/" + path ,
                         HttpMethod.POST,
                         httpEntity,
                         new ParameterizedTypeReference<Object>() {}
@@ -101,7 +101,7 @@ public class CustomQueryRestTemplate {
         String parametersString = parametersList.isEmpty() ? "" : "?" + String.join("&", parametersList );
 
         ResponseEntity<List<Map<String, Object>>> response =
-                restTemplate.exchange(this.sofiaUri + "/custom-query/data-objects/" + path + parametersString ,
+                restTemplate.exchange(this.middlewareUri + "/custom-query/data-objects/" + path + parametersString ,
                         HttpMethod.GET,
                         httpEntity,
                         new ParameterizedTypeReference<List<Map<String, Object>>>() {}

@@ -15,6 +15,7 @@ public class ContractRequestDTO {
     @JsonProperty("@type")
     private String type = "ContractRequest";
     private String counterPartyAddress = "";
+    private String counterPartyId = "";
     private String protocol = "dataspace-protocol-http";
     private Policy policy = new Policy();
 
@@ -34,11 +35,15 @@ public class ContractRequestDTO {
     public static class Policy {
         @JsonProperty("@context")
         private String context = "http://www.w3.org/ns/odrl.jsonld";
-        @JsonProperty("@id")
-        private String id = "";
         @JsonProperty("@type")
         private String type = "Offer";
-        private String assigner = "provider";
+        @JsonProperty("@id")
+        private String id = "";
+        private String assigner = "";
+        private String assignee = "";
         private String target = "assetId";
+        private String[] permission = new String[0];
+        private String[] prohibition = new String[0];
+        private String[] obligation = new String[0];
     }
 }
