@@ -55,18 +55,24 @@ Each connector instance exposes a set of well-defined API endpoints on dedicated
 | :---------------- | :------: | :---- | :---- |
 | Connector Base | 8001 | /api | Default connector API endpoint |
 | Connector Public | 8002 | /public | Used for exposing open APIs and endpoint registration |
-| Connector Management | 8003 | /management | Used for internal configuration, extension registration, and system health |
-| Connector Protocol | 8004 | /protocol | Manages IDS protocol communication between connectors |
-| Connector Control | 8005 | /control | Handles contract negotiation and transfer process coordination |
+| Connector Control | 8003 | /control | Handles contract negotiation and transfer process coordination |
+| Connector Management | 8004 | /management | Used for internal configuration, extension registration, and system health |
+| Connector Protocol | 8005 | /protocol | Public IDS protocol endpoint used for communication between connectors |
 | Identity Hub Base | 7001 | /api | Default Identity Hub API endpoint |
-| Identity Hub Credentials | 7002 | /api/credentials | Handles credential management endpoints |
+| Identity Hub Credentials | 7002 | /api/credentials | Public endpoint for credential management operations and credential retrieval |
 | Identity Hub Identity | 7003 | /api/identity | Exposes identity-related endpoints |
 | Identity Hub DID | 7004 | / | Serves DID-related endpoints |
 | Identity Hub Version | 7005 | /api/version | Exposes version information |
 | Identity Hub STS | 7006 | /api/sts | Handles security token service endpoints |
-| Handler | 15588 | /handler | Backend service endpoint for file storage and pull request reception |
+| Handler | 15588 | /handler | Public backend endpoint for file storage operations and pull request reception |
 
 **Important note**: Make sure these ports are open and not occupied by other processes on your system.
+
+The following endpoints must be publicly reachable through your reverse proxy because they are used by external systems and users:
+
+- Identity Hub Credentials on port `7002` at `/api/credentials`
+- Connector Protocol on port `8005` at `/protocol`
+- Handler on port `15588` at `/handler`
 
 In the demo setup, the connector uses the default port mapping as shown above.
 
@@ -94,15 +100,21 @@ You can use a reverse proxy (e.g., **Nginx**, **HAProxy**, or a **cloud load bal
 
   - Maintain a clean public interface without exposing internal infrastructure
 
+For the WeForming Connector deployment, you do not need to publish every internal service. Only the endpoints that must accept inbound traffic from external users or external connectors should be exposed publicly. In practice, this means publishing exactly these three paths through the reverse proxy:
+
+- `/handler`, so backend clients can submit files and trigger pull-request related flows
+- `/protocol`, so other connectors can reach the IDS protocol endpoint
+- `/api/credentials`, so credential-related Identity Hub requests can be served externally
+
+All remaining ports can stay internal and be reachable only from inside the host or private network.
+
 Here’s a real-world configuration example:
 
 | Connector Interface	 | Frontend (Public URL) | Backend (Internal URL) |
 | :---------------- | :------: | :---- |
-| Handler | https://weforming-connector-sec.eurodyn.com/handler | http://weforming-connector-server.eurodyn.com:15588 | 
-| Public | https://weforming-connector-sec.eurodyn.com/public | http://weforming-connector-server.eurodyn.com:8002 |
-| Management | https://weforming-connector-sec.eurodyn.com/management | http://weforming-connector-server.eurodyn.com:8003 |
-| Protocol | https://weforming-connector-sec.eurodyn.com/protocol | http://weforming-connector-server.eurodyn.com:8004 |
-| Control | https://weforming-connector-sec.eurodyn.com/control | http://weforming-connector-server.eurodyn.com:8005 |
+| Handler | https://weforming-connector-sec.eurodyn.com/handler | http://weforming-connector-server.eurodyn.com:15588/handler | 
+| Protocol | https://weforming-connector-sec.eurodyn.com/protocol | http://weforming-connector-server.eurodyn.com:8005/protocol |
+| Identity Hub Credentials | https://weforming-connector-sec.eurodyn.com/api/credentials | http://weforming-connector-server.eurodyn.com:7002/api/credentials |
 
 ## Additional Configuration (Onboarding Process)
 
@@ -140,6 +152,33 @@ This includes the values received during the Landing Process and any environment
 - External URLs and reverse proxy settings
 
 Review the generated `.env` carefully before starting the connector.
+
+## Configure the Connector in the Middleware App
+
+After completing the onboarding process and deploying your connector, you must also register your connector settings in the Middleware application. This step is required so the Middleware can communicate with your deployed services using the correct connector URLs and your participant DID.
+
+Log in to the Middleware application with your user account, open the `Connector Settings` page, and fill in the connector endpoints and DID that correspond to your deployment.
+
+The following values should be provided:
+
+- `Handler Url`
+- `Handler Public Url`
+- `Connector Public Url`
+- `Connector Management Url`
+- `Connector Protocol Url`
+- `Connector Control Url`
+- `Connector DID`
+
+Use the URLs that are actually reachable from the Middleware environment:
+
+- For publicly exposed endpoints, use the HTTPS reverse-proxy URLs you configured for your deployment.
+- For internal-only endpoints, use the private hostnames or internal URLs that the Middleware can resolve and access.
+
+Make sure the DID entered in the Middleware matches the DID configured in your connector during onboarding. If any of these values are incorrect, the Middleware will not be able to interact correctly with your connector.
+
+The screenshot below shows the page where these values must be entered:
+
+![Connector Settings](connector_settings.png)
 
 ## Provide Data to WeForming Programmatically
 
