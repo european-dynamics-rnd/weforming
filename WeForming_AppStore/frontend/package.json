@@ -1,0 +1,25 @@
+{
+  "name": "appstore-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.18.1",
+    "vue": "^3.5.40",
+    "vue-router": "^4.6.4",
+    "vuetify": "^3.12.11",
+    "@mdi/font": "^7.4.47",
+    "@jsonforms/core": "^3.8.0",
+    "@jsonforms/vue": "^3.8.0",
+    "@jsonforms/vue-vanilla": "^3.8.0",
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.8",
+    "vite": "^8.1.5"
+  }
+}

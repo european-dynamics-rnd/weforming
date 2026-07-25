@@ -1,0 +1,61 @@
+{
+  "realm": "weforming",
+  "enabled": true,
+  "sslRequired": "none",
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "registrationEmailAsUsername": false,
+  "clients": [
+    {
+      "clientId": "weforming-app-store",
+      "name": "WeForming App Store",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "test-secret-0123456789",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
+    }
+  ],
+  "roles": {
+    "client": {
+      "weforming-app-store": [
+        { "name": "dev", "description": "Can publish apps" },
+        { "name": "user", "description": "Plain user" }
+      ]
+    }
+  },
+  "users": [
+    {
+      "username": "dev@weforming.eu",
+      "email": "dev@weforming.eu",
+      "firstName": "Dev",
+      "lastName": "User",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        { "type": "password", "value": "devpass", "temporary": false }
+      ],
+      "clientRoles": {
+        "weforming-app-store": ["dev", "user"]
+      }
+    },
+    {
+      "username": "user@weforming.eu",
+      "email": "user@weforming.eu",
+      "firstName": "Plain",
+      "lastName": "User",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        { "type": "password", "value": "userpass", "temporary": false }
+      ],
+      "clientRoles": {
+        "weforming-app-store": ["user"]
+      }
+    }
+  ]
+}

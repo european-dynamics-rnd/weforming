@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-weforming}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-weforming}
+      POSTGRES_DB: ${POSTGRES_DB:-weforming}
+    volumes:
+      # Persistent, gitignored local data dir (see .gitignore /data/).
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-weforming} -d ${POSTGRES_DB:-weforming}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    ports:
+      # Bind to localhost only — nginx (on the host) is the public entry point.
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./backend:/app
+
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER:-weforming}:${POSTGRES_PASSWORD:-weforming}@db:5432/${POSTGRES_DB:-weforming}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:8080}
+      - KEYCLOAK_SERVER_URL=${KEYCLOAK_SERVER_URL}
+      - KEYCLOAK_REALM=${KEYCLOAK_REALM}
+      - KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+    ports:
+      # Bind to localhost only — nginx proxies to it.
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      - backend
+    restart: unless-stopped

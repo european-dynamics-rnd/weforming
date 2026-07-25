@@ -1,0 +1,21 @@
+# Local environment file — copy from .env_default; never commit real secrets.
+.env
+
+# Local Postgres data (bind-mounted, must not be committed)
+/data/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# VS Code files
+.vscode/
+
+# Node / frontend build
+node_modules/
+frontend/dist/
+
+# Legacy SQLite and one-off migration script 
+# Not for publishing (local dev legacy)
+backend/appstore.db
+backend/migrate_sqlite_to_postgres.py

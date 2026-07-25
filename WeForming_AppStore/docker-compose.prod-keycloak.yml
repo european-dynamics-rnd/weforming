@@ -1,0 +1,54 @@
+# Overlay that bundles Keycloak INTO the production stack (docker-compose.yml) for a
+# pre-flight test on a real server, before switching to an external Keycloak.
+#
+# Because login uses ROPC proxied by the backend, the browser never talks to Keycloak
+# directly — only the backend does (over the internal Docker network). So Keycloak needs
+# no public hostname; only the backend + frontend need your server's FQDN (set in .env:
+# VITE_API_URL and CORS_ORIGINS — see .env comments).
+#
+# Run:
+#   docker compose -f docker-compose.yml -f docker-compose.prod-keycloak.yml up -d --build
+#
+# When ready for the external Keycloak: drop this overlay, fill KEYCLOAK_* in .env, and run
+# the plain `docker compose up -d --build`.
+#
+# NOTE: uses Keycloak dev mode (start-dev) — fine for this pre-flight, not for real production.
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+    volumes:
+      - ./keycloak/realm-weforming.json:/opt/keycloak/data/import/realm-weforming.json:ro
+    ports:
+      # Admin console only (optional), bound to localhost — reach it via an SSH
+      # tunnel if needed. The app login never uses Keycloak from the browser.
+      - "127.0.0.1:8081:8080"
+    restart: unless-stopped
+
+  backend:
+    # Point the backend at the bundled Keycloak (overrides the .env values). The token
+    # issuer is http://keycloak:8080/realms/weforming, which the backend also validates
+    # against — consistent because only the backend reaches Keycloak.
+    environment:
+      - KEYCLOAK_SERVER_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=weforming
+      - KEYCLOAK_CLIENT_ID=weforming-app-store
+      - KEYCLOAK_CLIENT_SECRET=test-secret-0123456789
+    depends_on:
+      keycloak:
+        condition: service_started
+
+  # Stand-in "installer" for the pre-flight/demo: logs whatever an app's install_url
+  # POSTs to it. Point install_url at http://hookcatcher:8000/install and watch with:
+  #   docker compose -f docker-compose.yml -f docker-compose.prod-keycloak.yml logs -f hookcatcher
+  hookcatcher:
+    image: python:3.11-slim
+    command: ["python", "/hookcatcher.py"]
+    volumes:
+      - ./deploy/hookcatcher.py:/hookcatcher.py:ro
+    restart: unless-stopped

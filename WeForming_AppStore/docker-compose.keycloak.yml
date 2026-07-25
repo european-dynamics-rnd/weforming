@@ -1,0 +1,80 @@
+# Full local stack for end-to-end testing: Keycloak + Postgres + backend + frontend.
+# Not for production — the main docker-compose.yml points at an external Keycloak.
+#
+#   docker compose -f docker-compose.keycloak.yml up -d --build
+#   docker compose -f docker-compose.keycloak.yml down        # keeps ./data/postgres
+#   docker compose -f docker-compose.keycloak.yml down -v     # DB data is a bind mount, so this does NOT wipe it
+#
+# App UI:            http://localhost:8090   (8080 is left for the main stack)
+# Backend API:       http://localhost:8001
+# Keycloak console:  http://localhost:8081  (admin / admin)
+# Test users (log in with email): dev@weforming.eu / devpass  (developer),
+#                                 user@weforming.eu / userpass (plain user)
+name: weforming-kctest
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+    volumes:
+      - ./keycloak/realm-weforming.json:/opt/keycloak/data/import/realm-weforming.json:ro
+    ports:
+      - "8081:8080"
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: weforming
+      POSTGRES_PASSWORD: weforming
+      POSTGRES_DB: weforming
+    volumes:
+      # Shares the same persistent, gitignored data dir as docker-compose.yml.
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U weforming -d weforming"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      SQLALCHEMY_DATABASE_URL: postgresql+psycopg2://weforming:weforming@db:5432/weforming
+      CORS_ORIGINS: http://localhost:8090
+      KEYCLOAK_SERVER_URL: http://keycloak:8080
+      KEYCLOAK_REALM: weforming
+      KEYCLOAK_CLIENT_ID: weforming-app-store
+      KEYCLOAK_CLIENT_SECRET: test-secret-0123456789
+    ports:
+      - "8001:8000"
+    depends_on:
+      keycloak:
+        condition: service_started
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Baked in at build time; the browser talks to the backend on :8001.
+        VITE_API_URL: http://localhost:8001
+    ports:
+      - "8090:8080"
+    depends_on:
+      - backend
+
+  # Stand-in "installer": logs whatever an app's install_url POSTs to it.
+  # Point install_url at http://hookcatcher:8000/install and watch with:
+  #   docker compose -f docker-compose.keycloak.yml logs -f hookcatcher
+  hookcatcher:
+    image: python:3.11-slim
+    command: ["python", "/hookcatcher.py"]
+    volumes:
+      - ./deploy/hookcatcher.py:/hookcatcher.py:ro
+    restart: unless-stopped

@@ -12,6 +12,8 @@ Overall, WeForming builds an integrated, scalable architecture that enables buil
 
 - **[WeForming Open Energy Services]([./Open_Energy_Services/](https://github.com/european-dynamics-rnd/weforming/tree/master/Open%20Energy%20Services#weforming-open-energy-services))**
 
+- **[WeForming App Store](./WeForming_AppStore/)**
+
 - **[API Gateway](./api_gateway/)**
 
 - **[iGFB-pedia](./iGFB-pedia/)**  
